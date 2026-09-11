@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'analytics_pages.dart';
 import 'app_scope.dart';
-import 'data.dart';
+import 'lga_historical_page.dart';
+import 'official_historical_page.dart';
 import 'pages.dart';
 import 'widgets.dart';
 
@@ -13,98 +13,104 @@ class ScopedHistoricalElectionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = CampaignScope.of(context);
     final lga = scope.lgaName;
-    if (lga == null) return const HistoricalElectionsPage();
+    if (lga == null) return const HistoricalElectionsHub();
+    return LgaHistoricalDetailPage(lga: lga);
+  }
+}
 
-    return ListView(
-      padding: const EdgeInsets.all(28),
-      children: [
-        PageHeading(
-          title: '$lga Historical Elections',
-          subtitle:
-              'LGA-level governorship history is kept separate from statewide totals so the system never mislabels state data as $lga data.',
-          trailing: StatusPill('$lga LGA'),
-        ),
-        const SizedBox(height: 18),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF5D9),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFFFE19B)),
-          ),
-          child: const Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+class HistoricalElectionsHub extends StatelessWidget {
+  const HistoricalElectionsHub({super.key});
+
+  @override
+  Widget build(BuildContext context) => DefaultTabController(
+        length: 2,
+        child: ColoredBox(
+          color: const Color(0xFFF3F6F3),
+          child: Column(
             children: [
-              Icon(Icons.fact_check_outlined, color: Color(0xFF8A5B00)),
-              SizedBox(width: 10),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.fromLTRB(24, 14, 24, 0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEAF5EE),
+                        borderRadius: BorderRadius.circular(13),
+                      ),
+                      child: const Icon(Icons.how_to_vote_outlined,
+                          color: pdpGreen),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Historical Elections',
+                              style: TextStyle(
+                                  color: ink,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w900)),
+                          SizedBox(height: 2),
+                          Text(
+                            'Statewide INEC archive and LGA-level historical intelligence',
+                            style: TextStyle(
+                                color: muted,
+                                fontSize: 10.5,
+                                fontWeight: FontWeight.w600),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const StatusPill('SOURCE-AWARE'),
+                  ],
+                ),
+              ),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+                child: const TabBar(
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                  labelColor: pdpGreenDark,
+                  unselectedLabelColor: muted,
+                  indicatorColor: pdpGreen,
+                  dividerColor: Color(0xFFE5EBE6),
+                  labelStyle: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 12,
+                  ),
+                  tabs: [
+                    Tab(
+                      icon: Icon(Icons.account_balance_outlined, size: 18),
+                      text: 'Statewide INEC Archive',
+                    ),
+                    Tab(
+                      icon: Icon(Icons.grid_view_rounded, size: 18),
+                      text: '23-LGA Landscape',
+                    ),
+                  ],
+                ),
+              ),
               Expanded(
-                child: Text(
-                  'Verified LGA-level results have not been imported yet. No LGA vote totals, turnout, swing or margins are fabricated. Statewide reference totals remain available separately.',
-                  style: TextStyle(
-                      color: Color(0xFF6D4A00), fontWeight: FontWeight.w700),
+                child: TabBarView(
+                  children: [
+                    const OfficialHistoricalElectionsPage(),
+                    ListView(
+                      padding: const EdgeInsets.fromLTRB(24, 22, 24, 36),
+                      children: const [
+                        LgaHistoricalIntelligencePanel(),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 16),
-        SectionCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('LGA result import status',
-                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 4),
-              Text('$lga requires sourced election-result records for each comparison year.',
-                  style: const TextStyle(color: muted)),
-              const SizedBox(height: 12),
-              ...historicalElections.map((e) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(child: Text('${e.year}')),
-                    title: Text('$lga ${e.year} governorship result',
-                        style: const TextStyle(fontWeight: FontWeight.w800)),
-                    subtitle: const Text('No verified LGA figure loaded'),
-                    trailing: const StatusPill('SOURCE REQUIRED',
-                        color: Color(0xFFD68A00)),
-                  )),
-            ],
-          ),
-        ),
-        const SizedBox(height: 14),
-        SectionCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Statewide reference — not LGA data',
-                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 4),
-              const Text(
-                'These known Benue totals are displayed only as statewide context.',
-                style: TextStyle(color: muted),
-              ),
-              const SizedBox(height: 12),
-              ...historicalElections.map((e) => Padding(
-                    padding: const EdgeInsets.only(bottom: 14),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(children: [
-                          Text('${e.year}',
-                              style: const TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.w900)),
-                          const Spacer(),
-                          const StatusPill('BENUE STATE TOTAL'),
-                        ]),
-                        ElectionBars(apc: e.apcVotes, pdp: e.pdpVotes),
-                      ],
-                    ),
-                  )),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+      );
 }
 
 class ScopedElectionIntelligencePage extends StatelessWidget {
@@ -120,7 +126,7 @@ class ScopedElectionIntelligencePage extends StatelessWidget {
           icon: Icons.analytics_outlined,
           title: '$lga intelligence scope',
           detail:
-              'Statewide factors remain visible below, but $lga-specific polling, historical results and field evidence must be loaded before LGA-level conclusions are generated.',
+              'Statewide factors remain visible below, but $lga-specific polling and current field evidence must be loaded before LGA-level conclusions are generated. Historical LGA records are available separately in Historical Elections.',
         ),
         const Expanded(child: ElectionIntelligencePage()),
       ],
