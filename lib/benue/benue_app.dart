@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'analytics_pages.dart';
+import 'communications_page.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
 import 'widgets.dart';
@@ -56,6 +57,7 @@ class _CampaignShellState extends State<CampaignShell> {
     _Destination('Media Intelligence', Icons.public_rounded),
     _Destination('Community Issues', Icons.forum_outlined),
     _Destination('Situation Room', Icons.radar_rounded),
+    _Destination('Communications', Icons.chat_bubble_outline_rounded),
     _Destination('Field Network', Icons.hub_rounded),
     _Destination('Logistics & Tasks', Icons.inventory_2_outlined),
     _Destination('Election Day', Icons.how_to_vote_rounded),
@@ -72,6 +74,7 @@ class _CampaignShellState extends State<CampaignShell> {
     MediaIntelligencePage(),
     CommunityIssuesPage(),
     SituationRoomPage(),
+    CommunicationsPage(),
     FieldNetworkPage(),
     LogisticsTasksPage(),
     ElectionDayPage(),
