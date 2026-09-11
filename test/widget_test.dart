@@ -15,10 +15,11 @@ void main() {
 
     expect(find.text('POLISPHERE BENUE'), findsOneWidget);
     expect(find.text('Director General Command'), findsOneWidget);
-    expect(find.text('Open incidents'), findsWidgets);
-    expect(find.text('Open tasks'), findsWidgets);
-    expect(find.text('Checked in'), findsWidgets);
-    expect(find.text('Command priorities'), findsOneWidget);
+    expect(find.text('Campaign readiness'), findsOneWidget);
+    expect(find.text('Critical incidents'), findsOneWidget);
+    expect(find.text('Open tasks'), findsOneWidget);
+    expect(find.text('LGA readiness board'), findsOneWidget);
+    expect(find.text('DG decision desk'), findsOneWidget);
     expect(find.text('DG command shortcuts'), findsOneWidget);
     expect(find.textContaining('Zaria'), findsNothing);
   });
