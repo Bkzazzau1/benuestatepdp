@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'app_scope.dart';
+import 'clean_intelligence_page.dart';
 import 'lga_historical_page.dart';
 import 'lga_intelligence_page.dart';
 import 'official_historical_page.dart';
 import 'pages.dart';
-import 'premium_intelligence_page.dart';
 import 'widgets.dart';
 
 class ScopedHistoricalElectionsPage extends StatelessWidget {
@@ -66,7 +66,7 @@ class HistoricalElectionsHub extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const StatusPill('SOURCE-AWARE'),
+                    const StatusPill('INEC DATA'),
                   ],
                 ),
               ),
@@ -156,7 +156,7 @@ class ScopedElectionIntelligencePage extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  PremiumElectionIntelligencePage(scopeLga: lga),
+                  CleanElectionIntelligencePage(scopeLga: lga),
                   LgaIntelligenceCommandPage(initialLga: lga),
                 ],
               ),
@@ -181,7 +181,7 @@ class ScopedCampaignTrendsPage extends StatelessWidget {
           icon: Icons.trending_up_rounded,
           title: '$lga campaign trend context',
           detail:
-              'Prototype statewide trend series remains visible below. Production $lga trends will be calculated only from geography-tagged field, media, event and polling records.',
+              'Statewide trends are shown below alongside the active $lga campaign scope.',
         ),
         const Expanded(child: CampaignTrendsPage()),
       ],
