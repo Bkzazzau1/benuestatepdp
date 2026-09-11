@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'app_scope.dart';
+import 'domain/records_store.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
+import 'record_pages.dart';
 import 'scoped_communications.dart';
 import 'scoped_intelligence.dart';
 import 'scoped_map.dart';
-import 'scoped_operations.dart';
 import 'widgets.dart';
 
 class BenueCampaignApp extends StatefulWidget {
@@ -18,42 +19,47 @@ class BenueCampaignApp extends StatefulWidget {
 
 class _BenueCampaignAppState extends State<BenueCampaignApp> {
   final scopeController = CampaignScopeController();
+  final recordsController = CampaignRecordsController.prototypeSeed();
 
   @override
   void dispose() {
     scopeController.dispose();
+    recordsController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => CampaignScope(
         controller: scopeController,
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'PoliSphere Benue — PDP Governorship Campaign',
-          theme: ThemeData(
-            useMaterial3: true,
-            scaffoldBackgroundColor: canvas,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: pdpGreen,
-              primary: pdpGreen,
-              secondary: pdpRed,
-              surface: Colors.white,
+        child: CampaignRecords(
+          controller: recordsController,
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'PoliSphere Benue — PDP Governorship Campaign',
+            theme: ThemeData(
+              useMaterial3: true,
+              scaffoldBackgroundColor: canvas,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: pdpGreen,
+                primary: pdpGreen,
+                secondary: pdpRed,
+                surface: Colors.white,
+              ),
+              fontFamily: 'Arial',
+              navigationRailTheme: const NavigationRailThemeData(
+                indicatorColor: Color(0xFFE4F3E8),
+                selectedIconTheme: IconThemeData(color: pdpGreen),
+                selectedLabelTextStyle:
+                    TextStyle(color: pdpGreenDark, fontWeight: FontWeight.w800),
+              ),
+              sliderTheme: const SliderThemeData(
+                activeTrackColor: pdpGreen,
+                thumbColor: pdpGreen,
+                inactiveTrackColor: Color(0xFFDDE7DF),
+              ),
             ),
-            fontFamily: 'Arial',
-            navigationRailTheme: const NavigationRailThemeData(
-              indicatorColor: Color(0xFFE4F3E8),
-              selectedIconTheme: IconThemeData(color: pdpGreen),
-              selectedLabelTextStyle:
-                  TextStyle(color: pdpGreenDark, fontWeight: FontWeight.w800),
-            ),
-            sliderTheme: const SliderThemeData(
-              activeTrackColor: pdpGreen,
-              thumbColor: pdpGreen,
-              inactiveTrackColor: Color(0xFFDDE7DF),
-            ),
+            home: const CampaignShell(),
           ),
-          home: const CampaignShell(),
         ),
       );
 }
@@ -87,19 +93,19 @@ class _CampaignShellState extends State<CampaignShell> {
   ];
 
   static const pages = <Widget>[
-    OverviewPage(),
+    RecordsOverviewPage(),
     ScopedBenueMapPage(),
-    ScopedCampaignOperationsPage(),
+    RecordsCampaignOperationsPage(),
     ScopedHistoricalElectionsPage(),
     ScopedElectionIntelligencePage(),
     ScopedCampaignTrendsPage(),
     MediaIntelligencePage(),
     CommunityIssuesPage(),
-    ScopedSituationRoomPage(),
+    RecordsSituationRoomPage(),
     ScopedCommunicationsPage(),
-    ScopedFieldNetworkPage(),
-    ScopedLogisticsTasksPage(),
-    ScopedElectionDayPage(),
+    RecordsFieldNetworkPage(),
+    RecordsLogisticsTasksPage(),
+    RecordsElectionDayPage(),
     ReportsDocumentsPage(),
     DataGovernancePage(),
   ];
