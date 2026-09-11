@@ -20,6 +20,7 @@ void main() {
     expect(find.text('5,102'), findsWidgets);
     expect(find.textContaining('Benue State PDP Governorship Campaign'),
         findsOneWidget);
+    expect(find.textContaining('Zaria'), findsNothing);
   });
 
   testWidgets('opens historical election intelligence and forecast scenarios',
@@ -81,5 +82,26 @@ void main() {
     expect(find.text('Gboko'), findsWidgets);
     expect(find.text('Otukpo'), findsWidgets);
     expect(find.text('Priority feed'), findsOneWidget);
+  });
+
+  testWidgets('opens campaign operations and media intelligence modules',
+      (tester) async {
+    tester.view.physicalSize = const Size(1600, 1100);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const BenueCampaignApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Campaign Operations').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Campaign command structure'), findsOneWidget);
+    expect(find.text('Candidate movement & engagement workflow'), findsOneWidget);
+
+    await tester.tap(find.text('Media Intelligence').first);
+    await tester.pumpAndSettle();
+    expect(find.text('Narrative verification desk'), findsOneWidget);
+    expect(find.text('Individual profiling'), findsOneWidget);
   });
 }
