@@ -440,7 +440,7 @@ class _CreateMeetingPanel extends StatelessWidget {
           if (audienceMode == MeetingAudienceMode.group) ...[
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: selectedGroupId,
+              initialValue: selectedGroupId,
               decoration: const InputDecoration(labelText: 'Select group'),
               items: groups
                   .map((group) => DropdownMenuItem(

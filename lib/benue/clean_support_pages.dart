@@ -162,7 +162,7 @@ class CleanCommunityIssuesPage extends StatelessWidget {
                 : Column(children: [
                     geography,
                     const SizedBox(height: 14),
-                    const requests,
+                    requests,
                   ]);
           }),
         ],

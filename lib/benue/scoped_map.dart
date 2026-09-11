@@ -303,7 +303,6 @@ class _LgaOverview extends StatelessWidget {
     final records = CampaignRecords.of(context);
     final summary = records.summaryFor(lga.id);
     final assignments = records.assignmentsFor(lga.id);
-    final incidents = records.incidentsFor(lga.id);
     final readiness = records.readinessFor(lga.id);
 
     return Column(children: [

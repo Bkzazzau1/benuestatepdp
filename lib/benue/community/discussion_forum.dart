@@ -123,6 +123,7 @@ class _DiscussionForumPageState extends State<DiscussionForumPage> {
       ],
     );
     final files = await openFiles(acceptedTypeGroups: const [group]);
+    if (!mounted) return const [];
     final selected = <CommunityMedia>[];
     final community = CampaignCommunity.of(context, listen: false);
     for (final file in files.take(limit)) {
