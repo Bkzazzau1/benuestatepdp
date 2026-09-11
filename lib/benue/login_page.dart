@@ -123,11 +123,12 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                           borderRadius: BorderRadius.circular(14),
                         ),
                         alignment: Alignment.center,
-                        child: const Text(
-                          'PDP',
-                          style: TextStyle(
-                            color: pdpGreenDark,
-                            fontWeight: FontWeight.w900,
+                        child: Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Image.asset(
+                            'assets/images/pdp.jpg',
+                            fit: BoxFit.contain,
+                            semanticLabel: 'PDP logo',
                           ),
                         ),
                       ),
