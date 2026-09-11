@@ -12,34 +12,21 @@ class ScopedCommunicationsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = CampaignScope.of(context);
     final records = CampaignRecords.of(context);
-    final lga = scope.lgaName;
     final incidents = records.incidentsFor(scope.lgaId);
     final tasks = records.tasksFor(scope.lgaId);
+    final lga = scope.lgaName;
 
-    if (lga == null) {
-      return Column(
-        children: [
-          _RecordsContextBar(
-            title: 'Statewide Communications Context',
-            detail:
-                '${incidents.length} incident rooms and ${tasks.length} operational tasks are available in the shared statewide record model.',
-            incidentId: incidents.isEmpty ? null : incidents.first.id,
-            roomId: incidents.isEmpty ? null : incidents.first.conversationId,
-          ),
-          const Expanded(child: CommunicationsPage()),
-        ],
-      );
-    }
-
-    final primaryIncident = incidents.isEmpty ? null : incidents.first;
     return Column(
       children: [
-        _RecordsContextBar(
-          title: '$lga Communications Context',
-          detail:
-              '$lga conversations inherit ${scope.lgaId}. Incident rooms, tasks and reports now resolve through the same shared record IDs; State Command remains available for escalation.',
-          incidentId: primaryIncident?.id,
-          roomId: primaryIncident?.conversationId,
+        _CommunicationsContextBar(
+          title: lga == null
+              ? 'Statewide Communications'
+              : '$lga Campaign Communications',
+          detail: lga == null
+              ? '${incidents.length} active incident conversations and ${tasks.length} campaign tasks are in the statewide command view.'
+              : 'Campaign conversations, coordination and escalation for $lga LGA.',
+          incidents: incidents.length,
+          tasks: tasks.length,
         ),
         const Expanded(child: CommunicationsPage()),
       ],
@@ -47,18 +34,18 @@ class ScopedCommunicationsPage extends StatelessWidget {
   }
 }
 
-class _RecordsContextBar extends StatelessWidget {
-  const _RecordsContextBar({
+class _CommunicationsContextBar extends StatelessWidget {
+  const _CommunicationsContextBar({
     required this.title,
     required this.detail,
-    required this.incidentId,
-    required this.roomId,
+    required this.incidents,
+    required this.tasks,
   });
 
   final String title;
   final String detail;
-  final String? incidentId;
-  final String? roomId;
+  final int incidents;
+  final int tasks;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -90,18 +77,15 @@ class _RecordsContextBar extends StatelessWidget {
                   const SizedBox(height: 3),
                   Text(detail,
                       style: const TextStyle(color: muted, height: 1.35)),
-                  if (incidentId != null) ...[
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 7,
-                      runSpacing: 7,
-                      children: [
-                        StatusPill(incidentId!, color: pdpRed),
-                        if (roomId != null)
-                          StatusPill(roomId!, color: const Color(0xFF5E5CB2)),
-                      ],
-                    ),
-                  ],
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 7,
+                    runSpacing: 7,
+                    children: [
+                      StatusPill('$incidents INCIDENTS', color: pdpRed),
+                      StatusPill('$tasks TASKS', color: const Color(0xFF5E5CB2)),
+                    ],
+                  ),
                 ],
               ),
             ),
