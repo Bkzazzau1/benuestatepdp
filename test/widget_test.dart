@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:polisphere/benue/benue_app.dart';
+
+import 'ui_test_helpers.dart';
 
 void main() {
   testWidgets('loads the Benue statewide record-driven command dashboard',
@@ -10,8 +11,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const BenueCampaignApp());
-    await tester.pumpAndSettle();
+    await pumpLoggedInAsDirectorGeneral(tester);
 
     expect(find.text('POLISPHERE BENUE'), findsOneWidget);
     expect(find.textContaining('Benue State PDP Governorship Campaign'),
@@ -28,8 +28,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const BenueCampaignApp());
-    await tester.pumpAndSettle();
+    await pumpLoggedInAsDirectorGeneral(tester);
     await tester.tap(find.text('Historical Elections').first);
     await tester.pumpAndSettle();
 
@@ -48,8 +47,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const BenueCampaignApp());
-    await tester.pumpAndSettle();
+    await pumpLoggedInAsDirectorGeneral(tester);
     await tester.tap(find.text('Election Intelligence').first);
     await tester.pumpAndSettle();
 
@@ -72,8 +70,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const BenueCampaignApp());
-    await tester.pumpAndSettle();
+    await pumpLoggedInAsDirectorGeneral(tester);
     await tester.tap(find.text('Campaign Trends').first);
     await tester.pumpAndSettle();
 
@@ -90,8 +87,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const BenueCampaignApp());
-    await tester.pumpAndSettle();
+    await pumpLoggedInAsDirectorGeneral(tester);
     await tester.tap(find.text('Situation Room').first);
     await tester.pumpAndSettle();
 
@@ -108,8 +104,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const BenueCampaignApp());
-    await tester.pumpAndSettle();
+    await pumpLoggedInAsDirectorGeneral(tester);
 
     await tester.tap(find.text('Campaign Operations').first);
     await tester.pumpAndSettle();
