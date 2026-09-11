@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'analytics_pages.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
 import 'widgets.dart';
@@ -49,6 +50,7 @@ class _CampaignShellState extends State<CampaignShell> {
   static const destinations = <_Destination>[
     _Destination('Command Overview', Icons.dashboard_rounded),
     _Destination('Campaign Operations', Icons.campaign_outlined),
+    _Destination('Historical Elections', Icons.history_rounded),
     _Destination('Election Intelligence', Icons.analytics_rounded),
     _Destination('Campaign Trends', Icons.trending_up_rounded),
     _Destination('Media Intelligence', Icons.public_rounded),
@@ -64,6 +66,7 @@ class _CampaignShellState extends State<CampaignShell> {
   static const pages = <Widget>[
     OverviewPage(),
     CampaignOperationsPage(),
+    HistoricalElectionsPage(),
     ElectionIntelligencePage(),
     CampaignTrendsPage(),
     MediaIntelligencePage(),
