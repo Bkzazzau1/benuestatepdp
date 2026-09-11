@@ -1,8 +1,8 @@
 /// Shared domain models for the Benue State campaign command platform.
 ///
-/// UI pages should gradually move away from page-local mock classes and use
-/// these models so the Flutter prototype can later connect cleanly to Django/
-/// DRF, WebSocket and offline-sync services without rewriting the product model.
+/// UI pages should use these models so the Flutter prototype can later connect
+/// cleanly to Django/DRF, WebSocket and offline-sync services without rewriting
+/// the product model.
 library;
 
 enum CampaignRole {
@@ -26,6 +26,8 @@ enum GeographyLevel { state, lga, ward, pollingUnit }
 
 enum RecordStatus { draft, submitted, verified, rejected, archived }
 
+enum RecordOrigin { prototypeSeed, campaignEntry, imported, systemDerived }
+
 enum IncidentSeverity { info, low, medium, high, critical }
 
 enum IncidentStatus {
@@ -39,6 +41,14 @@ enum IncidentStatus {
 }
 
 enum TaskStatus { open, inProgress, blocked, completed, cancelled }
+
+enum AssignmentStatus { vacant, assigned, training, ready, suspended }
+
+enum ActivityStatus { planned, approved, active, completed, cancelled }
+
+enum AssetStatus { available, assigned, inUse, maintenance, unavailable }
+
+enum ElectionReadinessStatus { notStarted, incomplete, ready, attentionRequired }
 
 enum ConversationType { direct, group, incident, broadcast }
 
@@ -69,15 +79,21 @@ class GeographicScope {
   const GeographicScope({
     required this.level,
     required this.state,
+    this.lgaId,
     this.lga,
+    this.wardId,
     this.ward,
+    this.pollingUnitId,
     this.pollingUnit,
   });
 
   final GeographyLevel level;
   final String state;
+  final String? lgaId;
   final String? lga;
+  final String? wardId;
   final String? ward;
+  final String? pollingUnitId;
   final String? pollingUnit;
 
   static const benueState = GeographicScope(
@@ -100,6 +116,7 @@ class CampaignUser {
     required this.role,
     required this.scope,
     required this.isActive,
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -107,6 +124,57 @@ class CampaignUser {
   final CampaignRole role;
   final GeographicScope scope;
   final bool isActive;
+  final RecordOrigin origin;
+}
+
+class FieldAssignment {
+  const FieldAssignment({
+    required this.id,
+    required this.userId,
+    required this.scope,
+    required this.role,
+    required this.status,
+    required this.updatedAt,
+    this.trainingComplete = false,
+    this.checkedIn = false,
+    this.origin = RecordOrigin.campaignEntry,
+  });
+
+  final String id;
+  final String userId;
+  final GeographicScope scope;
+  final CampaignRole role;
+  final AssignmentStatus status;
+  final DateTime updatedAt;
+  final bool trainingComplete;
+  final bool checkedIn;
+  final RecordOrigin origin;
+}
+
+class CampaignActivity {
+  const CampaignActivity({
+    required this.id,
+    required this.title,
+    required this.category,
+    required this.scope,
+    required this.ownerUnit,
+    required this.status,
+    required this.startsAt,
+    this.endsAt,
+    this.notes,
+    this.origin = RecordOrigin.campaignEntry,
+  });
+
+  final String id;
+  final String title;
+  final String category;
+  final GeographicScope scope;
+  final String ownerUnit;
+  final ActivityStatus status;
+  final DateTime startsAt;
+  final DateTime? endsAt;
+  final String? notes;
+  final RecordOrigin origin;
 }
 
 class CampaignTask {
@@ -122,6 +190,7 @@ class CampaignTask {
     this.sourceConversationId,
     this.sourceMessageId,
     this.incidentId,
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -135,6 +204,7 @@ class CampaignTask {
   final String? sourceConversationId;
   final String? sourceMessageId;
   final String? incidentId;
+  final RecordOrigin origin;
 }
 
 class CampaignIncident {
@@ -150,6 +220,7 @@ class CampaignIncident {
     this.assignedTeam,
     this.conversationId,
     this.summary,
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -163,6 +234,31 @@ class CampaignIncident {
   final String? assignedTeam;
   final String? conversationId;
   final String? summary;
+  final RecordOrigin origin;
+}
+
+class CampaignAsset {
+  const CampaignAsset({
+    required this.id,
+    required this.name,
+    required this.category,
+    required this.scope,
+    required this.status,
+    required this.updatedAt,
+    this.custodianId,
+    this.conditionNote,
+    this.origin = RecordOrigin.campaignEntry,
+  });
+
+  final String id;
+  final String name;
+  final String category;
+  final GeographicScope scope;
+  final AssetStatus status;
+  final DateTime updatedAt;
+  final String? custodianId;
+  final String? conditionNote;
+  final RecordOrigin origin;
 }
 
 class CommunicationRoom {
@@ -175,6 +271,7 @@ class CommunicationRoom {
     required this.createdAt,
     this.incidentId,
     this.description,
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -185,6 +282,7 @@ class CommunicationRoom {
   final DateTime createdAt;
   final String? incidentId;
   final String? description;
+  final RecordOrigin origin;
 }
 
 class CampaignMessage {
@@ -198,6 +296,7 @@ class CampaignMessage {
     this.incidentId,
     this.replyToMessageId,
     this.attachments = const [],
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -209,6 +308,7 @@ class CampaignMessage {
   final String? incidentId;
   final String? replyToMessageId;
   final List<EvidenceAttachment> attachments;
+  final RecordOrigin origin;
 }
 
 class EvidenceAttachment {
@@ -220,6 +320,7 @@ class EvidenceAttachment {
     required this.uploaderId,
     this.contentHash,
     this.caption,
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -229,6 +330,7 @@ class EvidenceAttachment {
   final String uploaderId;
   final String? contentHash;
   final String? caption;
+  final RecordOrigin origin;
 }
 
 class FieldReport {
@@ -242,6 +344,7 @@ class FieldReport {
     required this.status,
     this.incidentId,
     this.attachments = const [],
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -253,6 +356,31 @@ class FieldReport {
   final RecordStatus status;
   final String? incidentId;
   final List<EvidenceAttachment> attachments;
+  final RecordOrigin origin;
+}
+
+class ElectionReadinessRecord {
+  const ElectionReadinessRecord({
+    required this.id,
+    required this.scope,
+    required this.status,
+    required this.agentCoveragePercent,
+    required this.communicationReady,
+    required this.logisticsReady,
+    required this.updatedAt,
+    this.note,
+    this.origin = RecordOrigin.campaignEntry,
+  });
+
+  final String id;
+  final GeographicScope scope;
+  final ElectionReadinessStatus status;
+  final double agentCoveragePercent;
+  final bool communicationReady;
+  final bool logisticsReady;
+  final DateTime updatedAt;
+  final String? note;
+  final RecordOrigin origin;
 }
 
 class ElectionResultSubmission {
@@ -267,6 +395,7 @@ class ElectionResultSubmission {
     this.verifiedBy,
     this.verifiedAt,
     this.disputeReason,
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -279,6 +408,7 @@ class ElectionResultSubmission {
   final String? verifiedBy;
   final DateTime? verifiedAt;
   final String? disputeReason;
+  final RecordOrigin origin;
 
   /// Campaign-collected figures must remain explicitly unofficial until INEC
   /// declares the official result.
@@ -296,6 +426,7 @@ class IntelligenceObservation {
     required this.confidence,
     required this.verificationState,
     this.sourceReference,
+    this.origin = RecordOrigin.campaignEntry,
   });
 
   final String id;
@@ -307,6 +438,7 @@ class IntelligenceObservation {
   final double confidence;
   final VerificationState verificationState;
   final String? sourceReference;
+  final RecordOrigin origin;
 }
 
 class AuditEvent {
