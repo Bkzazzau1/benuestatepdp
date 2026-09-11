@@ -108,42 +108,48 @@ const currentFactors = <IntelligenceFactor>[
     status: 'APC advantage',
     importance: 'Very high',
     confidence: 'High',
-    detail: 'The sitting governor is APC; the model should explicitly account for incumbency rather than assume historical party loyalty is fixed.',
+    detail:
+        'The sitting governor carries the advantages and pressures of incumbency. Historical party loyalty should not be treated as fixed.',
   ),
   IntelligenceFactor(
     title: 'Ruling-party cohesion',
     status: 'Contested',
     importance: 'High',
     confidence: 'Medium',
-    detail: 'Public reporting in 2026 describes a significant Alia–Akume political rift. Treat the effect size as uncertain until supported by current field evidence.',
+    detail:
+        'Public reporting in 2026 describes a significant Alia–Akume political rift. Its electoral effect remains uncertain and should be judged against current campaign evidence.',
   ),
   IntelligenceFactor(
     title: 'Security environment',
     status: 'Major public issue',
     importance: 'Very high',
     confidence: 'High',
-    detail: 'Security and displacement remain material statewide issues and should be tracked as public-interest indicators, not as individual voter profiles.',
+    detail:
+        'Security, displacement and freedom of movement remain major statewide concerns, especially in farming communities.',
   ),
   IntelligenceFactor(
     title: 'Cost of living',
     status: 'High salience',
     importance: 'High',
     confidence: 'High',
-    detail: 'National economic pressure and household living costs are important context for the 2027 cycle and should be measured through transparent aggregate sources.',
+    detail:
+        'Household living costs, food prices and wider economic pressure are important context for the 2027 campaign.',
   ),
   IntelligenceFactor(
     title: 'PDP organization',
-    status: 'Campaign data required',
+    status: 'Building strength',
     importance: 'Very high',
     confidence: 'Low',
-    detail: 'Ward structure, agent coverage, volunteer activity, events and internal coordination should come from verified campaign operations data.',
+    detail:
+        'Ward structure, agent coverage, volunteer activity, events and internal coordination will be central to statewide competitiveness.',
   ),
   IntelligenceFactor(
     title: 'Turnout',
     status: 'Uncertain',
     importance: 'Very high',
     confidence: 'Low',
-    detail: 'Forecasts should use turnout ranges and scenario simulation instead of one fixed assumption.',
+    detail:
+        'Turnout may vary substantially by geography, security conditions, mobilization and public enthusiasm.',
   ),
 ];
 
@@ -152,31 +158,36 @@ const campaignChallenges = <CampaignChallenge>[
     title: 'Recover the 2023 PDP vote decline',
     severity: 'Critical',
     owner: 'Election Intelligence',
-    detail: 'PDP raw governorship votes fell from 434,473 in 2019 to 223,913 in 2023. The system should identify where the decline was concentrated once LGA/ward results are loaded.',
+    detail:
+        'PDP governorship votes fell from 434,473 in 2019 to 223,913 in 2023. Priority attention should go to the LGAs where the decline was deepest and recovery potential is strongest.',
   ),
   CampaignChallenge(
     title: 'Statewide field coverage',
     severity: 'High',
     owner: 'Operations',
-    detail: 'Every one of the 23 LGAs, 276 wards and 5,102 polling units should have a visible readiness and reporting status.',
+    detail:
+        'Every one of the 23 LGAs, 276 wards and 5,102 polling units should have clear campaign ownership, readiness and reporting visibility.',
   ),
   CampaignChallenge(
     title: 'Evidence quality',
     severity: 'High',
     owner: 'Data & Analytics',
-    detail: 'Forecast confidence must fall automatically when polling, field reports or historical granular results are missing or stale.',
+    detail:
+        'Campaign decisions should rely on current polling, field reports, historical results and clearly dated evidence.',
   ),
   CampaignChallenge(
     title: 'Rapid incident escalation',
     severity: 'High',
     owner: 'Situation Room',
-    detail: 'Critical security, logistics, legal and election-day reports must move through acknowledgement, assignment, escalation and closure with an audit trail.',
+    detail:
+        'Critical security, logistics, legal and election-day issues should move quickly from reporting to ownership, action and closure.',
   ),
   CampaignChallenge(
     title: 'Narrative verification',
     severity: 'Medium',
     owner: 'Media Intelligence',
-    detail: 'Public claims should be separated into verified, false, misleading or insufficient-evidence states before any campaign response is approved.',
+    detail:
+        'Important public claims should be checked carefully before the campaign responds or amplifies them.',
   ),
 ];
 
