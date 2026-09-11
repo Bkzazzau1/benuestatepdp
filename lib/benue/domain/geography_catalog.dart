@@ -22,6 +22,7 @@ class LgaRecord {
   GeographicScope get scope => GeographicScope(
         level: GeographyLevel.lga,
         state: state,
+        lgaId: id,
         lga: name,
       );
 }
@@ -46,7 +47,9 @@ class WardRecord {
   GeographicScope get scope => GeographicScope(
         level: GeographyLevel.ward,
         state: 'Benue',
+        lgaId: lgaId,
         lga: lgaName,
+        wardId: id,
         ward: name,
       );
 }
@@ -75,8 +78,11 @@ class PollingUnitRecord {
   GeographicScope get scope => GeographicScope(
         level: GeographyLevel.pollingUnit,
         state: 'Benue',
+        lgaId: lgaId,
         lga: lgaName,
+        wardId: wardId,
         ward: wardName,
+        pollingUnitId: id,
         pollingUnit: name,
       );
 }
