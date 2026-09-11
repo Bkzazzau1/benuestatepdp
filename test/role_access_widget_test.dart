@@ -5,7 +5,7 @@ import 'package:polisphere/benue/benue_app.dart';
 void main() {
   testWidgets('polling unit agent sees only role-appropriate modules',
       (tester) async {
-    tester.view.physicalSize = const Size(1600, 1100);
+    tester.view.physicalSize = const Size(1600, 1500);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
