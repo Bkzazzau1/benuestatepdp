@@ -20,7 +20,7 @@ void main() {
       wardName: 'Verified Ward',
     );
     expect(scope.isWard, isTrue);
-    expect(scope.label, 'Verified Ward Ward • Makurdi');
+    expect(scope.label, 'Verified Ward • Makurdi LGA');
 
     scope.selectPollingUnit(
       lgaId: 'BEN-LGA-13',
