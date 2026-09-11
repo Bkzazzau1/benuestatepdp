@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'app_scope.dart';
 import 'campaign_identity.dart';
 import 'command_actions.dart';
+import 'community/community_store.dart';
+import 'community/discussion_forum.dart';
+import 'community/meeting_room.dart';
 import 'domain/models.dart';
 import 'domain/records_store.dart';
 import 'login_page.dart';
@@ -26,12 +29,14 @@ class BenueCampaignApp extends StatefulWidget {
 class _BenueCampaignAppState extends State<BenueCampaignApp> {
   final scopeController = CampaignScopeController();
   final recordsController = CampaignRecordsController.prototypeSeed();
+  final communityController = CampaignCommunityController.prototypeSeed();
   final sessionController = CampaignSessionController();
 
   @override
   void dispose() {
     scopeController.dispose();
     recordsController.dispose();
+    communityController.dispose();
     sessionController.dispose();
     super.dispose();
   }
@@ -43,11 +48,14 @@ class _BenueCampaignAppState extends State<BenueCampaignApp> {
           controller: scopeController,
           child: CampaignRecords(
             controller: recordsController,
-            child: MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: 'PoliSphere Benue — PDP Governorship Campaign',
-              theme: _theme(),
-              home: const _AuthenticationGate(),
+            child: CampaignCommunity(
+              controller: communityController,
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'PoliSphere Benue — PDP Governorship Campaign',
+                theme: _theme(),
+                home: const _AuthenticationGate(),
+              ),
             ),
           ),
         ),
@@ -70,7 +78,7 @@ class _BenueCampaignAppState extends State<BenueCampaignApp> {
         ),
         navigationRailTheme: const NavigationRailThemeData(
           indicatorColor: Color(0xFFE4F3E8),
-          selectedIconTheme: IconThemeData(color: pdpGreen),
+          selectedIconTheme: IconDataThemeData(color: pdpGreen),
           selectedLabelTextStyle:
               TextStyle(color: pdpGreenDark, fontWeight: FontWeight.w800),
         ),
@@ -151,6 +159,10 @@ class _CampaignShellState extends State<CampaignShell> {
             RecordsSituationRoomPage()),
         const _Destination(AppModule.communications, 'Communications',
             Icons.chat_bubble_outline_rounded, ScopedCommunicationsPage()),
+        const _Destination(AppModule.discussionForum, 'Discussion Forum',
+            Icons.forum_rounded, DiscussionForumPage()),
+        const _Destination(AppModule.meetingRoom, 'Meeting Room',
+            Icons.video_call_rounded, MeetingRoomPage()),
         const _Destination(AppModule.fieldNetwork, 'Field Network', Icons.hub_rounded,
             RecordsFieldNetworkPage()),
         const _Destination(AppModule.logisticsTasks, 'Logistics & Tasks',
@@ -336,24 +348,24 @@ class _DesktopSidebar extends StatelessWidget {
                     child: Material(
                       color: Colors.white,
                       child: ListTile(
-                      dense: true,
-                      minLeadingWidth: 28,
-                      selected: active,
-                      selectedColor: pdpGreenDark,
-                      selectedTileColor: const Color(0xFFE8F4EB),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      leading: Icon(item.icon,
-                          size: 21, color: active ? pdpGreen : muted),
-                      title: Text(
-                        item.label,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: active ? FontWeight.w900 : FontWeight.w700,
+                        dense: true,
+                        minLeadingWidth: 28,
+                        selected: active,
+                        selectedColor: pdpGreenDark,
+                        selectedTileColor: const Color(0xFFE8F4EB),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      onTap: () => onChoose(item.module),
+                        leading: Icon(item.icon,
+                            size: 21, color: active ? pdpGreen : muted),
+                        title: Text(
+                          item.label,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: active ? FontWeight.w900 : FontWeight.w700,
+                          ),
+                        ),
+                        onTap: () => onChoose(item.module),
                       ),
                     ),
                   );
