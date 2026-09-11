@@ -195,7 +195,7 @@ class _ElectionIntelligencePageState extends State<ElectionIntelligencePage> {
         label: Text(text),
         selected: tab == index,
         onSelected: (_) => setState(() => tab = index),
-        selectedColor: pdpGreen.withOpacity(.12),
+        selectedColor: pdpGreen.withValues(alpha: .12),
         side: BorderSide(color: tab == index ? pdpGreen : const Color(0xFFDCE5DE)),
         labelStyle: TextStyle(
           color: tab == index ? pdpGreenDark : ink,
@@ -583,7 +583,7 @@ class SituationRoomPage extends StatelessWidget {
                                 .map((lga) => Container(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
                                       decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(.86),
+                                        color: Colors.white.withValues(alpha: .86),
                                         borderRadius: BorderRadius.circular(999),
                                       ),
                                       child: Text(lga,

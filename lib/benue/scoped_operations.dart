@@ -215,7 +215,7 @@ class ScopedSituationRoomPage extends StatelessWidget {
                               .map((name) => Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(.9),
+                                      color: Colors.white.withValues(alpha: .9),
                                       borderRadius: BorderRadius.circular(999),
                                       border: scoped ? Border.all(color: pdpGreen) : null,
                                     ),

@@ -166,7 +166,7 @@ class _ScopedBenueMapPageState extends State<ScopedBenueMapPage> {
                     onTap: () => selectLga(context, lga),
                     leading: CircleAvatar(
                       backgroundColor: active
-                          ? pdpGreen.withOpacity(.12)
+                          ? pdpGreen.withValues(alpha: .12)
                           : const Color(0xFFF0F3F0),
                       child: Text('${globalIndex + 1}',
                           style: TextStyle(
@@ -430,7 +430,7 @@ class _ScopedBenueMapPageState extends State<ScopedBenueMapPage> {
         label: Text(label),
         selected: tab == index,
         onSelected: (_) => setState(() => tab = index),
-        selectedColor: pdpGreen.withOpacity(.12),
+        selectedColor: pdpGreen.withValues(alpha: .12),
         side: BorderSide(
             color: tab == index ? pdpGreen : const Color(0xFFDCE5DE)),
       );

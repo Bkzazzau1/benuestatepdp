@@ -346,7 +346,7 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DropdownButtonFormField<String>(
-                  value: target,
+                  initialValue: target,
                   decoration: const InputDecoration(labelText: 'Recipients'),
                   items: const [
                     DropdownMenuItem(
@@ -665,7 +665,7 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
                       label: Text(label),
                       selected: activeFilter == label,
                       onSelected: (_) => setState(() => activeFilter = label),
-                      selectedColor: pdpGreen.withOpacity(.12),
+                      selectedColor: pdpGreen.withValues(alpha: .12),
                       side: BorderSide(
                           color: activeFilter == label
                               ? pdpGreen
@@ -694,7 +694,7 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
                         onTap: () => _selectConversation(index),
                         leading: CircleAvatar(
                           backgroundColor: active
-                              ? pdpGreen.withOpacity(.12)
+                              ? pdpGreen.withValues(alpha: .12)
                               : const Color(0xFFF0F3F0),
                           child: Icon(
                             item.type == _ConversationType.incident
@@ -927,7 +927,7 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
               style: TextStyle(fontWeight: FontWeight.w900)),
           const SizedBox(height: 10),
           const _IntegrationRow(
-              Icons.warning_outline_rounded, 'Situation Room incidents'),
+              Icons.warning_amber_rounded, 'Situation Room incidents'),
           const _IntegrationRow(Icons.task_alt_rounded, 'Task management'),
           const _IntegrationRow(Icons.inventory_2_outlined, 'Logistics records'),
           const _IntegrationRow(Icons.feed_outlined, 'Field reports'),
@@ -1039,7 +1039,7 @@ class _InlineCard extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.all(9),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(.72),
+          color: Colors.white.withValues(alpha: .72),
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: const Color(0xFFDCE5DE)),
         ),

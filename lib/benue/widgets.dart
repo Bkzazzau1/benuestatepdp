@@ -61,7 +61,7 @@ class MetricCard extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: accent.withOpacity(.10),
+                color: accent.withValues(alpha: .10),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(icon, color: accent),
@@ -107,7 +107,7 @@ class StatusPill extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: color.withOpacity(.10),
+          color: color.withValues(alpha: .10),
           borderRadius: BorderRadius.circular(999),
         ),
         child: Text(text,

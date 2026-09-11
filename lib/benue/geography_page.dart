@@ -185,7 +185,7 @@ class _LgaList extends StatelessWidget {
                           onTap: () => onSelect(lga),
                           leading: CircleAvatar(
                             backgroundColor: active
-                                ? pdpGreen.withOpacity(.12)
+                                ? pdpGreen.withValues(alpha: .12)
                                 : const Color(0xFFF0F3F0),
                             child: Text(
                               '${globalIndex + 1}',
@@ -323,7 +323,7 @@ class _LgaCommandView extends StatelessWidget {
         label: Text(label),
         selected: selectedTab == index,
         onSelected: (_) => onTabChanged(index),
-        selectedColor: pdpGreen.withOpacity(.12),
+        selectedColor: pdpGreen.withValues(alpha: .12),
         side: BorderSide(
           color: selectedTab == index ? pdpGreen : const Color(0xFFDCE5DE),
         ),
