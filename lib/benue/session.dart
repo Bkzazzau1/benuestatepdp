@@ -13,6 +13,8 @@ enum AppModule {
   communityIssues,
   situationRoom,
   communications,
+  discussionForum,
+  meetingRoom,
   fieldNetwork,
   logisticsTasks,
   electionDay,
@@ -112,6 +114,11 @@ IconData roleIcon(CampaignRole role) => switch (role) {
       CampaignRole.readOnlyExecutive => Icons.visibility_rounded,
     };
 
+const _communityModules = <AppModule>{
+  AppModule.discussionForum,
+  AppModule.meetingRoom,
+};
+
 Set<AppModule> allowedModules(CampaignRole role) {
   const all = <AppModule>{
     AppModule.overview,
@@ -124,6 +131,8 @@ Set<AppModule> allowedModules(CampaignRole role) {
     AppModule.communityIssues,
     AppModule.situationRoom,
     AppModule.communications,
+    AppModule.discussionForum,
+    AppModule.meetingRoom,
     AppModule.fieldNetwork,
     AppModule.logisticsTasks,
     AppModule.electionDay,
@@ -131,9 +140,9 @@ Set<AppModule> allowedModules(CampaignRole role) {
     AppModule.dataGovernance,
   };
 
-  return switch (role) {
+  final modules = switch (role) {
     CampaignRole.candidate || CampaignRole.directorGeneral || CampaignRole.stateAdministrator => all,
-    CampaignRole.situationRoomDirector => {
+    CampaignRole.situationRoomDirector => <AppModule>{
         AppModule.overview,
         AppModule.benueMap,
         AppModule.electionIntelligence,
@@ -146,7 +155,7 @@ Set<AppModule> allowedModules(CampaignRole role) {
         AppModule.reportsDocuments,
         AppModule.dataGovernance,
       },
-    CampaignRole.operationsOfficer => {
+    CampaignRole.operationsOfficer => <AppModule>{
         AppModule.overview,
         AppModule.benueMap,
         AppModule.campaignOperations,
@@ -158,7 +167,7 @@ Set<AppModule> allowedModules(CampaignRole role) {
         AppModule.electionDay,
         AppModule.reportsDocuments,
       },
-    CampaignRole.mediaIntelligenceOfficer => {
+    CampaignRole.mediaIntelligenceOfficer => <AppModule>{
         AppModule.overview,
         AppModule.historicalElections,
         AppModule.electionIntelligence,
@@ -168,7 +177,7 @@ Set<AppModule> allowedModules(CampaignRole role) {
         AppModule.communications,
         AppModule.reportsDocuments,
       },
-    CampaignRole.legalOfficer => {
+    CampaignRole.legalOfficer => <AppModule>{
         AppModule.overview,
         AppModule.electionIntelligence,
         AppModule.situationRoom,
@@ -177,7 +186,7 @@ Set<AppModule> allowedModules(CampaignRole role) {
         AppModule.reportsDocuments,
         AppModule.dataGovernance,
       },
-    CampaignRole.logisticsOfficer => {
+    CampaignRole.logisticsOfficer => <AppModule>{
         AppModule.overview,
         AppModule.benueMap,
         AppModule.campaignOperations,
@@ -188,13 +197,13 @@ Set<AppModule> allowedModules(CampaignRole role) {
         AppModule.electionDay,
         AppModule.reportsDocuments,
       },
-    CampaignRole.financeOfficer => {
+    CampaignRole.financeOfficer => <AppModule>{
         AppModule.overview,
         AppModule.campaignOperations,
         AppModule.reportsDocuments,
         AppModule.dataGovernance,
       },
-    CampaignRole.lgaCoordinator => {
+    CampaignRole.lgaCoordinator => <AppModule>{
         AppModule.overview,
         AppModule.benueMap,
         AppModule.campaignOperations,
@@ -206,7 +215,7 @@ Set<AppModule> allowedModules(CampaignRole role) {
         AppModule.electionDay,
         AppModule.reportsDocuments,
       },
-    CampaignRole.wardCoordinator => {
+    CampaignRole.wardCoordinator => <AppModule>{
         AppModule.overview,
         AppModule.benueMap,
         AppModule.campaignOperations,
@@ -216,19 +225,19 @@ Set<AppModule> allowedModules(CampaignRole role) {
         AppModule.logisticsTasks,
         AppModule.electionDay,
       },
-    CampaignRole.pollingUnitAgent => {
+    CampaignRole.pollingUnitAgent => <AppModule>{
         AppModule.overview,
         AppModule.communications,
         AppModule.electionDay,
       },
-    CampaignRole.fieldReporter => {
+    CampaignRole.fieldReporter => <AppModule>{
         AppModule.overview,
         AppModule.benueMap,
         AppModule.situationRoom,
         AppModule.communications,
         AppModule.fieldNetwork,
       },
-    CampaignRole.readOnlyExecutive => {
+    CampaignRole.readOnlyExecutive => <AppModule>{
         AppModule.overview,
         AppModule.benueMap,
         AppModule.historicalElections,
@@ -240,4 +249,6 @@ Set<AppModule> allowedModules(CampaignRole role) {
         AppModule.reportsDocuments,
       },
   };
+
+  return {...modules, ..._communityModules};
 }
