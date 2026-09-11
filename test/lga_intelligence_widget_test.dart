@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:polisphere/benue/lga_intelligence_page.dart';
 
 import 'ui_test_helpers.dart';
 
@@ -30,7 +31,10 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('Ward intelligence readiness'),
       400,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find.descendant(
+        of: find.byType(LgaIntelligenceCommandPage),
+        matching: find.byType(Scrollable),
+      ).first,
     );
     expect(find.text('Ward intelligence readiness'), findsOneWidget);
     expect(find.textContaining('No fabricated ward inference'), findsOneWidget);

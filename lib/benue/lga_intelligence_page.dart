@@ -611,6 +611,7 @@ class _ResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final result = this.result;
     if (result == null) {
       return Container(
         padding: const EdgeInsets.all(14),
