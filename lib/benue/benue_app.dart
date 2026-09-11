@@ -5,6 +5,7 @@ import 'domain/records_store.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
 import 'record_pages.dart';
+import 'records_governance.dart';
 import 'scoped_communications.dart';
 import 'scoped_intelligence.dart';
 import 'scoped_map.dart';
@@ -107,7 +108,7 @@ class _CampaignShellState extends State<CampaignShell> {
     RecordsLogisticsTasksPage(),
     RecordsElectionDayPage(),
     ReportsDocumentsPage(),
-    DataGovernancePage(),
+    RecordsGovernancePage(),
   ];
 
   void choose(int index) => setState(() => selected = index);
