@@ -29,7 +29,7 @@ class CampaignScopeController extends ChangeNotifier {
     if (_pollingUnitName != null) {
       return '${_pollingUnitName!} • ${_wardName ?? 'Ward'} • ${_lgaName ?? 'LGA'}';
     }
-    if (_wardName != null) return '${_wardName!} Ward • ${_lgaName ?? 'LGA'}';
+    if (_wardName != null) return '${_wardName!} • ${_lgaName ?? 'LGA'} LGA';
     if (_lgaName != null) return '${_lgaName!} LGA';
     return 'Benue State';
   }
@@ -113,7 +113,8 @@ class CampaignScope extends InheritedNotifier<CampaignScopeController> {
       assert(scope != null, 'CampaignScope is missing above this context.');
       return scope!.notifier!;
     }
-    final element = context.getElementForInheritedWidgetOfExactType<CampaignScope>();
+    final element =
+        context.getElementForInheritedWidgetOfExactType<CampaignScope>();
     final scope = element?.widget as CampaignScope?;
     assert(scope != null, 'CampaignScope is missing above this context.');
     return scope!.notifier!;
@@ -135,42 +136,63 @@ class ActiveScopeBar extends StatelessWidget {
       color: Colors.white,
       child: Container(
         constraints: const BoxConstraints(minHeight: 48),
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Color(0xFFE2EAE4))),
         ),
-        child: Row(
-          children: [
-            const Icon(Icons.my_location_rounded,
-                size: 18, color: Color(0xFF0B7A3B)),
-            const SizedBox(width: 8),
-            const Text('Active scope:',
-                style: TextStyle(
-                    color: Color(0xFF647067), fontWeight: FontWeight.w700)),
-            const SizedBox(width: 7),
-            Flexible(
-              child: Text(
-                scope.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    color: Color(0xFF10231A), fontWeight: FontWeight.w900),
-              ),
-            ),
-            const Spacer(),
-            if (!scope.isStatewide)
-              TextButton.icon(
-                onPressed: scope.clearToStatewide,
-                icon: const Icon(Icons.public_rounded, size: 17),
-                label: const Text('Statewide'),
-              ),
-            const SizedBox(width: 4),
-            OutlinedButton.icon(
-              onPressed: onOpenMap,
-              icon: const Icon(Icons.map_outlined, size: 17),
-              label: const Text('Benue Map'),
-            ),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 680;
+            final content = Row(
+              mainAxisSize: compact ? MainAxisSize.min : MainAxisSize.max,
+              children: [
+                const Icon(Icons.my_location_rounded,
+                    size: 18, color: Color(0xFF0B7A3B)),
+                const SizedBox(width: 8),
+                const Text('Active scope:',
+                    style: TextStyle(
+                        color: Color(0xFF647067),
+                        fontWeight: FontWeight.w700)),
+                const SizedBox(width: 7),
+                if (compact)
+                  Text(scope.label,
+                      style: const TextStyle(
+                          color: Color(0xFF10231A),
+                          fontWeight: FontWeight.w900))
+                else
+                  Flexible(
+                    child: Text(
+                      scope.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                          color: Color(0xFF10231A),
+                          fontWeight: FontWeight.w900),
+                    ),
+                  ),
+                if (!compact) const Spacer(),
+                const SizedBox(width: 12),
+                if (!scope.isStatewide)
+                  TextButton.icon(
+                    onPressed: scope.clearToStatewide,
+                    icon: const Icon(Icons.public_rounded, size: 17),
+                    label: const Text('Statewide'),
+                  ),
+                const SizedBox(width: 4),
+                OutlinedButton.icon(
+                  onPressed: onOpenMap,
+                  icon: const Icon(Icons.map_outlined, size: 17),
+                  label: const Text('Benue Map'),
+                ),
+              ],
+            );
+
+            if (!compact) return content;
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: content,
+            );
+          },
         ),
       ),
     );
