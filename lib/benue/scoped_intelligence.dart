@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'app_scope.dart';
 import 'lga_historical_page.dart';
+import 'lga_intelligence_page.dart';
 import 'official_historical_page.dart';
 import 'pages.dart';
 import 'premium_intelligence_page.dart';
@@ -120,7 +121,50 @@ class ScopedElectionIntelligencePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lga = CampaignScope.of(context).lgaName;
-    return PremiumElectionIntelligencePage(scopeLga: lga);
+    return DefaultTabController(
+      length: 2,
+      child: ColoredBox(
+        color: const Color(0xFFF3F6F3),
+        child: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(24, 10, 24, 0),
+              child: const TabBar(
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                labelColor: pdpGreenDark,
+                unselectedLabelColor: muted,
+                indicatorColor: pdpGreen,
+                dividerColor: Color(0xFFE5EBE6),
+                labelStyle: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 12,
+                ),
+                tabs: [
+                  Tab(
+                    icon: Icon(Icons.psychology_alt_outlined, size: 18),
+                    text: 'Strategic Intelligence',
+                  ),
+                  Tab(
+                    icon: Icon(Icons.location_city_outlined, size: 18),
+                    text: 'LGA Intelligence Unit',
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  PremiumElectionIntelligencePage(scopeLga: lga),
+                  LgaIntelligenceCommandPage(initialLga: lga),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
