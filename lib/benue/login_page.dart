@@ -191,7 +191,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                   const SizedBox(height: 28),
                   if (!compact) ...[
                     const Text(
-                      'One command view for campaign intelligence, field operations, communications and election readiness.',
+                      'Campaign intelligence, field operations, communications and election readiness in one command centre.',
                       style: TextStyle(color: Colors.white70, fontSize: 15, height: 1.5),
                     ),
                     const SizedBox(height: 24),
@@ -234,7 +234,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                 ),
                 const SizedBox(height: 8),
                 const Text(
-                  'Choose your operational role. The prototype changes modules and access by role; production authentication will connect to the backend later.',
+                  'Choose your role and enter your campaign workspace.',
                   style: TextStyle(color: muted, height: 1.5),
                 ),
                 const SizedBox(height: 24),
@@ -250,7 +250,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                         controller: operatorController,
                         decoration: _inputDecoration(
                           'Your name',
-                          'Example: State Operations Officer',
+                          'Enter your name',
                           Icons.person_outline_rounded,
                         ),
                       ),
@@ -262,7 +262,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                           controller: accessIdController,
                           decoration: _inputDecoration(
                             'Access ID / phone',
-                            'Prototype access identifier',
+                            'Enter access ID or phone',
                             Icons.badge_outlined,
                           ),
                         ),
@@ -276,7 +276,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                     controller: accessIdController,
                     decoration: _inputDecoration(
                       'Access ID / phone',
-                      'Prototype access identifier',
+                      'Enter access ID or phone',
                       Icons.badge_outlined,
                     ),
                   ),
@@ -288,7 +288,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                   onSubmitted: (_) => _signIn(),
                   decoration: _inputDecoration(
                     'Password',
-                    'Prototype only',
+                    'Enter password',
                     Icons.lock_outline_rounded,
                   ).copyWith(
                     suffixIcon: IconButton(
@@ -337,19 +337,18 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF7E8),
+                    color: const Color(0xFFF5F8F5),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFF0D9A9)),
+                    border: Border.all(color: const Color(0xFFE0E8E2)),
                   ),
                   child: const Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.science_outlined, size: 18, color: Color(0xFF9A6700)),
+                      Icon(Icons.shield_outlined, size: 18, color: pdpGreen),
                       SizedBox(width: 9),
                       Expanded(
                         child: Text(
-                          'Prototype login: passwords are not validated or stored yet. This screen is for UI, role flow and navigation testing.',
-                          style: TextStyle(color: Color(0xFF7A5600), fontSize: 12, height: 1.35),
+                          'Authorized campaign personnel only.',
+                          style: TextStyle(color: ink, fontSize: 12, fontWeight: FontWeight.w700),
                         ),
                       ),
                     ],
