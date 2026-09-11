@@ -4,6 +4,7 @@ import 'app_scope.dart';
 import 'lga_historical_page.dart';
 import 'official_historical_page.dart';
 import 'pages.dart';
+import 'premium_intelligence_page.dart';
 import 'widgets.dart';
 
 class ScopedHistoricalElectionsPage extends StatelessWidget {
@@ -119,18 +120,7 @@ class ScopedElectionIntelligencePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final lga = CampaignScope.of(context).lgaName;
-    if (lga == null) return const ElectionIntelligencePage();
-    return Column(
-      children: [
-        _ScopeBanner(
-          icon: Icons.analytics_outlined,
-          title: '$lga intelligence scope',
-          detail:
-              'Statewide factors remain visible below, but $lga-specific polling and current field evidence must be loaded before LGA-level conclusions are generated. Historical LGA records are available separately in Historical Elections.',
-        ),
-        const Expanded(child: ElectionIntelligencePage()),
-      ],
-    );
+    return PremiumElectionIntelligencePage(scopeLga: lga);
   }
 }
 
