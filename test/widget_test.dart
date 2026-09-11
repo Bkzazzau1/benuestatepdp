@@ -16,7 +16,7 @@ void main() {
     expect(find.text('POLISPHERE BENUE'), findsOneWidget);
     expect(find.text('Director General Command'), findsOneWidget);
     expect(find.text('Campaign readiness'), findsOneWidget);
-    expect(find.text('Critical incidents'), findsOneWidget);
+    expect(find.text('Open incidents'), findsOneWidget);
     expect(find.text('Open tasks'), findsOneWidget);
     expect(find.text('LGA readiness board'), findsOneWidget);
     expect(find.text('DG decision desk'), findsOneWidget);
@@ -72,7 +72,7 @@ void main() {
     expect(find.text('12,329'), findsWidgets);
   });
 
-  testWidgets('opens source-aware election intelligence and forecast safeguards',
+  testWidgets('opens election intelligence and scenario safeguards',
       (tester) async {
     tester.view.physicalSize = const Size(1600, 1100);
     tester.view.devicePixelRatio = 1;
@@ -85,29 +85,28 @@ void main() {
 
     expect(find.text('Election Intelligence Centre'), findsOneWidget);
     expect(find.text('Why the election was won'), findsOneWidget);
-    expect(find.textContaining('2023 • APC • Hyacinth Iormem Alia'), findsOneWidget);
+    expect(find.textContaining('2023 • APC • Hyacinth Iormem Alia'), findsWidgets);
     expect(find.text('Alia’s candidate-centered popularity'), findsOneWidget);
 
-    await tester.tap(find.textContaining('2015 • APC • Samuel Ortom'));
+    await tester.tap(find.textContaining('2015 • APC • Samuel Ortom').first);
     await tester.pumpAndSettle();
     expect(find.text('Civil-service and pension backlash'), findsOneWidget);
     expect(find.text('PDP primary and internal-party fracture'), findsOneWidget);
 
-    await tester.tap(find.textContaining('2019 • PDP • Samuel Ortom'));
+    await tester.tap(find.textContaining('2019 • PDP • Samuel Ortom').first);
     await tester.pumpAndSettle();
     expect(find.text('Security identity and anti-open-grazing stance'), findsOneWidget);
     expect(find.text('Defender-of-Benue campaign narrative'), findsOneWidget);
 
     await tester.tap(find.text('Forecast & Scenarios'));
     await tester.pumpAndSettle();
-    expect(find.text('Forecast engine status'), findsOneWidget);
+    expect(find.text('Scenario outlook'), findsOneWidget);
     expect(find.text('Scenario simulator'), findsOneWidget);
-    expect(find.textContaining('No fabricated win probability'), findsOneWidget);
     expect(find.text('SCENARIO — NOT PREDICTION'), findsOneWidget);
+    expect(find.textContaining('production model'), findsNothing);
   });
 
-  testWidgets('shows campaign trends with prototype data warning',
-      (tester) async {
+  testWidgets('shows campaign trends', (tester) async {
     tester.view.physicalSize = const Size(1440, 1000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -120,10 +119,10 @@ void main() {
     expect(find.text('Campaign Trends'), findsWidgets);
     expect(find.text('Momentum Index'), findsOneWidget);
     expect(find.text('Issue trend monitor'), findsOneWidget);
-    expect(find.textContaining('Prototype mode'), findsOneWidget);
+    expect(find.textContaining('Prototype mode'), findsNothing);
   });
 
-  testWidgets('situation room is backed by shared incident records',
+  testWidgets('situation room shows campaign incidents and field reports',
       (tester) async {
     tester.view.physicalSize = const Size(1440, 1000);
     tester.view.devicePixelRatio = 1;
@@ -136,11 +135,11 @@ void main() {
 
     expect(find.text('Incident command feed'), findsOneWidget);
     expect(find.text('Field reporting feed'), findsOneWidget);
-    expect(find.textContaining('INC-BEN-LGA-'), findsWidgets);
-    expect(find.textContaining('RPT-BEN-LGA-'), findsWidgets);
+    expect(find.text('Open incidents'), findsOneWidget);
+    expect(find.text('Field reports'), findsOneWidget);
   });
 
-  testWidgets('opens record-driven campaign operations and media intelligence',
+  testWidgets('opens campaign operations and media intelligence',
       (tester) async {
     tester.view.physicalSize = const Size(1600, 1100);
     tester.view.devicePixelRatio = 1;
@@ -151,13 +150,14 @@ void main() {
 
     await tester.tap(find.text('Campaign Operations').first);
     await tester.pumpAndSettle();
-    expect(find.text('Field assignments'), findsWidgets);
+    expect(find.text('Field assignments'), findsOneWidget);
     expect(find.text('Campaign activities'), findsOneWidget);
-    expect(find.textContaining('ASG-BEN-LGA-'), findsWidgets);
+    expect(find.text('Assignments'), findsOneWidget);
 
     await tester.tap(find.text('Media Intelligence').first);
     await tester.pumpAndSettle();
     expect(find.text('Narrative verification desk'), findsOneWidget);
-    expect(find.text('Individual profiling'), findsOneWidget);
+    expect(find.text('Public issue monitor'), findsOneWidget);
+    expect(find.text('Response workflow'), findsOneWidget);
   });
 }
