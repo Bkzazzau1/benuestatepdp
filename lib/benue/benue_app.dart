@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'operations_pages.dart';
 import 'pages.dart';
 import 'widgets.dart';
 
@@ -47,21 +48,31 @@ class _CampaignShellState extends State<CampaignShell> {
 
   static const destinations = <_Destination>[
     _Destination('Command Overview', Icons.dashboard_rounded),
+    _Destination('Campaign Operations', Icons.campaign_outlined),
     _Destination('Election Intelligence', Icons.analytics_rounded),
     _Destination('Campaign Trends', Icons.trending_up_rounded),
+    _Destination('Media Intelligence', Icons.public_rounded),
+    _Destination('Community Issues', Icons.forum_outlined),
     _Destination('Situation Room', Icons.radar_rounded),
     _Destination('Field Network', Icons.hub_rounded),
+    _Destination('Logistics & Tasks', Icons.inventory_2_outlined),
     _Destination('Election Day', Icons.how_to_vote_rounded),
+    _Destination('Reports & Documents', Icons.description_outlined),
     _Destination('Data & Governance', Icons.admin_panel_settings_rounded),
   ];
 
   static const pages = <Widget>[
     OverviewPage(),
+    CampaignOperationsPage(),
     ElectionIntelligencePage(),
     CampaignTrendsPage(),
+    MediaIntelligencePage(),
+    CommunityIssuesPage(),
     SituationRoomPage(),
     FieldNetworkPage(),
+    LogisticsTasksPage(),
     ElectionDayPage(),
+    ReportsDocumentsPage(),
     DataGovernancePage(),
   ];
 
@@ -254,7 +265,8 @@ class _CompactBrand extends StatelessWidget {
           Text('PoliSphere Benue',
               style: TextStyle(fontWeight: FontWeight.w900, color: ink)),
           SizedBox(width: 8),
-          Text('• PDP', style: TextStyle(color: pdpGreen, fontWeight: FontWeight.w800)),
+          Text('• PDP',
+              style: TextStyle(color: pdpGreen, fontWeight: FontWeight.w800)),
         ],
       );
 }
