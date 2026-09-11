@@ -3,9 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:polisphere/benue/benue_app.dart';
 
 void main() {
-  setUp(() {});
-
-  testWidgets('loads the Benue statewide command dashboard', (tester) async {
+  testWidgets('loads the Benue statewide record-driven command dashboard',
+      (tester) async {
     tester.view.physicalSize = const Size(1440, 1000);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -15,11 +14,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('POLISPHERE BENUE'), findsOneWidget);
-    expect(find.text('23'), findsOneWidget);
-    expect(find.text('276'), findsOneWidget);
-    expect(find.text('5,102'), findsWidgets);
     expect(find.textContaining('Benue State PDP Governorship Campaign'),
         findsOneWidget);
+    expect(find.text('Field assignments'), findsOneWidget);
+    expect(find.text('Priority incidents'), findsOneWidget);
+    expect(find.text('Operational tasks'), findsOneWidget);
     expect(find.textContaining('Zaria'), findsNothing);
   });
 
@@ -84,7 +83,7 @@ void main() {
     expect(find.textContaining('Prototype mode'), findsOneWidget);
   });
 
-  testWidgets('shows statewide situation room and LGA operational layer',
+  testWidgets('situation room is backed by shared incident records',
       (tester) async {
     tester.view.physicalSize = const Size(1440, 1000);
     tester.view.devicePixelRatio = 1;
@@ -96,14 +95,13 @@ void main() {
     await tester.tap(find.text('Situation Room').first);
     await tester.pumpAndSettle();
 
-    expect(find.text('Benue operational map'), findsOneWidget);
-    expect(find.text('Makurdi'), findsWidgets);
-    expect(find.text('Gboko'), findsWidgets);
-    expect(find.text('Otukpo'), findsWidgets);
-    expect(find.text('Priority feed'), findsOneWidget);
+    expect(find.text('Incident command feed'), findsOneWidget);
+    expect(find.text('Field reporting feed'), findsOneWidget);
+    expect(find.textContaining('INC-BEN-LGA-'), findsWidgets);
+    expect(find.textContaining('RPT-BEN-LGA-'), findsWidgets);
   });
 
-  testWidgets('opens campaign operations and media intelligence modules',
+  testWidgets('opens record-driven campaign operations and media intelligence',
       (tester) async {
     tester.view.physicalSize = const Size(1600, 1100);
     tester.view.devicePixelRatio = 1;
@@ -115,8 +113,9 @@ void main() {
 
     await tester.tap(find.text('Campaign Operations').first);
     await tester.pumpAndSettle();
-    expect(find.text('Campaign command structure'), findsOneWidget);
-    expect(find.text('Candidate movement & engagement workflow'), findsOneWidget);
+    expect(find.text('Field assignments'), findsWidgets);
+    expect(find.text('Campaign activities'), findsOneWidget);
+    expect(find.textContaining('ASG-BEN-LGA-'), findsWidgets);
 
     await tester.tap(find.text('Media Intelligence').first);
     await tester.pumpAndSettle();
