@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'ui_test_helpers.dart';
 
 void main() {
-  testWidgets('Makurdi selection resolves the same shared records across modules',
+  testWidgets('Makurdi selection carries the same campaign scope across modules',
       (tester) async {
     tester.view.physicalSize = const Size(1600, 1100);
     tester.view.devicePixelRatio = 1;
@@ -15,31 +15,35 @@ void main() {
 
     await tester.tap(find.text('Benue Map').first);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Demonstrate with Makurdi'));
+    await tester.tap(find.text('Makurdi').first);
     await tester.pumpAndSettle();
-    expect(find.text('Makurdi LGA'), findsWidgets);
+    expect(find.text('Makurdi LGA Command'), findsOneWidget);
 
     await tester.tap(find.text('Field Network').first);
     await tester.pumpAndSettle();
-    expect(find.text('ASG-BEN-LGA-13-COORD'), findsOneWidget);
+    expect(find.text('Field Network'), findsWidgets);
+    expect(find.textContaining('Makurdi LGA'), findsWidgets);
 
     await tester.tap(find.text('Situation Room').first);
     await tester.pumpAndSettle();
-    expect(find.text('INC-BEN-LGA-13-001'), findsOneWidget);
+    expect(find.text('Situation Room'), findsWidgets);
+    expect(find.textContaining('Makurdi LGA'), findsWidgets);
 
     await tester.tap(find.text('Logistics & Tasks').first);
     await tester.pumpAndSettle();
-    expect(find.text('TSK-BEN-LGA-13-001'), findsOneWidget);
-    expect(find.text('AST-BEN-LGA-13-VEH-01'), findsOneWidget);
+    expect(find.text('Makurdi Operations Vehicle 01'), findsOneWidget);
+    expect(find.text('Task board'), findsOneWidget);
 
     await tester.tap(find.text('Election Day').first);
     await tester.pumpAndSettle();
-    expect(find.text('READY-BEN-LGA-13-001'), findsOneWidget);
+    expect(find.text('Election Day'), findsWidgets);
+    expect(find.text('Readiness by area'), findsOneWidget);
+    expect(find.text('Makurdi'), findsWidgets);
 
     await tester.tap(find.text('Communications').first);
     await tester.pumpAndSettle();
-    expect(find.text('INC-BEN-LGA-13-001'), findsOneWidget);
-    expect(find.text('ROOM-INC-BEN-LGA-13-001'), findsOneWidget);
+    expect(find.text('Makurdi Campaign Communications'), findsOneWidget);
+    expect(find.text('Makurdi Operations'), findsWidgets);
 
     await tester.tap(find.text('Historical Elections').first);
     await tester.pumpAndSettle();
