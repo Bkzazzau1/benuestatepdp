@@ -1,41 +1,60 @@
 import 'package:flutter/material.dart';
+
 import 'analytics_pages.dart';
+import 'app_scope.dart';
 import 'communications_page.dart';
 import 'geography_page.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
+import 'scoped_operations.dart';
 import 'widgets.dart';
 
-class BenueCampaignApp extends StatelessWidget {
+class BenueCampaignApp extends StatefulWidget {
   const BenueCampaignApp({super.key});
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'PoliSphere Benue — PDP Governorship Campaign',
-        theme: ThemeData(
-          useMaterial3: true,
-          scaffoldBackgroundColor: canvas,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: pdpGreen,
-            primary: pdpGreen,
-            secondary: pdpRed,
-            surface: Colors.white,
+  State<BenueCampaignApp> createState() => _BenueCampaignAppState();
+}
+
+class _BenueCampaignAppState extends State<BenueCampaignApp> {
+  final scopeController = CampaignScopeController();
+
+  @override
+  void dispose() {
+    scopeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => CampaignScope(
+        controller: scopeController,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'PoliSphere Benue — PDP Governorship Campaign',
+          theme: ThemeData(
+            useMaterial3: true,
+            scaffoldBackgroundColor: canvas,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: pdpGreen,
+              primary: pdpGreen,
+              secondary: pdpRed,
+              surface: Colors.white,
+            ),
+            fontFamily: 'Arial',
+            navigationRailTheme: const NavigationRailThemeData(
+              indicatorColor: Color(0xFFE4F3E8),
+              selectedIconTheme: IconThemeData(color: pdpGreen),
+              selectedLabelTextStyle:
+                  TextStyle(color: pdpGreenDark, fontWeight: FontWeight.w800),
+            ),
+            sliderTheme: const SliderThemeData(
+              activeTrackColor: pdpGreen,
+              thumbColor: pdpGreen,
+              inactiveTrackColor: Color(0xFFDDE7DF),
+            ),
           ),
-          fontFamily: 'Arial',
-          navigationRailTheme: const NavigationRailThemeData(
-            indicatorColor: Color(0xFFE4F3E8),
-            selectedIconTheme: IconThemeData(color: pdpGreen),
-            selectedLabelTextStyle:
-                TextStyle(color: pdpGreenDark, fontWeight: FontWeight.w800),
-          ),
-          sliderTheme: const SliderThemeData(
-            activeTrackColor: pdpGreen,
-            thumbColor: pdpGreen,
-            inactiveTrackColor: Color(0xFFDDE7DF),
-          ),
+          home: const CampaignShell(),
         ),
-        home: const CampaignShell(),
       );
 }
 
@@ -70,22 +89,29 @@ class _CampaignShellState extends State<CampaignShell> {
   static const pages = <Widget>[
     OverviewPage(),
     BenueGeographyPage(),
-    CampaignOperationsPage(),
+    ScopedCampaignOperationsPage(),
     HistoricalElectionsPage(),
     ElectionIntelligencePage(),
     CampaignTrendsPage(),
     MediaIntelligencePage(),
     CommunityIssuesPage(),
-    SituationRoomPage(),
+    ScopedSituationRoomPage(),
     CommunicationsPage(),
-    FieldNetworkPage(),
-    LogisticsTasksPage(),
-    ElectionDayPage(),
+    ScopedFieldNetworkPage(),
+    ScopedLogisticsTasksPage(),
+    ScopedElectionDayPage(),
     ReportsDocumentsPage(),
     DataGovernancePage(),
   ];
 
   void choose(int index) => setState(() => selected = index);
+
+  Widget _content() => Column(
+        children: [
+          ActiveScopeBar(onOpenMap: () => choose(1)),
+          Expanded(child: IndexedStack(index: selected, children: pages)),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -169,7 +195,8 @@ class _CampaignShellState extends State<CampaignShell> {
                               const SizedBox(height: 12),
                               Expanded(
                                 child: ListView.builder(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 12),
                                   itemCount: destinations.length,
                                   itemBuilder: (context, index) {
                                     final item = destinations[index];
@@ -179,9 +206,11 @@ class _CampaignShellState extends State<CampaignShell> {
                                       child: ListTile(
                                         selected: active,
                                         selectedColor: pdpGreenDark,
-                                        selectedTileColor: const Color(0xFFE8F4EB),
+                                        selectedTileColor:
+                                            const Color(0xFFE8F4EB),
                                         shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(13)),
+                                            borderRadius:
+                                                BorderRadius.circular(13)),
                                         leading: Icon(item.icon,
                                             color: active ? pdpGreen : muted),
                                         title: Text(item.label,
@@ -203,12 +232,10 @@ class _CampaignShellState extends State<CampaignShell> {
                           ),
                         ),
                       ),
-                      Expanded(
-                        child: IndexedStack(index: selected, children: pages),
-                      ),
+                      Expanded(child: _content()),
                     ],
                   )
-                : IndexedStack(index: selected, children: pages),
+                : _content(),
           );
         },
       );
