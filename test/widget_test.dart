@@ -29,7 +29,8 @@ void main() {
     expect(find.textContaining('Zaria'), findsNothing);
   });
 
-  testWidgets('opens premium INEC historical election archive', (tester) async {
+  testWidgets('opens premium INEC historical election archive and LGA landscape',
+      (tester) async {
     tester.view.physicalSize = const Size(1600, 1100);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -39,6 +40,8 @@ void main() {
     await tester.tap(find.text('Historical Elections').first);
     await tester.pumpAndSettle();
 
+    expect(find.text('Statewide INEC Archive'), findsOneWidget);
+    expect(find.text('23-LGA Landscape'), findsOneWidget);
     expect(find.text('Historical Election Intelligence'), findsOneWidget);
     expect(find.text('INEC ELECTION ARCHIVE'), findsOneWidget);
     expect(find.text('2023 election snapshot'), findsOneWidget);
@@ -63,6 +66,15 @@ void main() {
       );
       expect(find.text(heading), findsOneWidget);
     }
+
+    await tester.tap(find.text('23-LGA Landscape'));
+    await tester.pumpAndSettle();
+    expect(find.text('Benue 23-LGA Historical Intelligence'), findsOneWidget);
+    expect(find.text('2023 LGA comparison'), findsOneWidget);
+    expect(find.text('2019 → 2023 LGA swing desk'), findsOneWidget);
+    expect(find.text('Makurdi'), findsWidgets);
+    expect(find.text('56,432'), findsWidgets);
+    expect(find.text('12,329'), findsWidgets);
   });
 
   testWidgets('opens historical election intelligence and forecast scenarios',
