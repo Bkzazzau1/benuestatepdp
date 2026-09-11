@@ -15,7 +15,7 @@ void main() {
 
     await tester.tap(find.text('Benue Map').first);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Demonstrate with Makurdi'));
+    await tester.tap(find.text('Makurdi').first);
     await tester.pumpAndSettle();
 
     expect(find.textContaining('EDITING MAKURDI'), findsOneWidget);
@@ -38,6 +38,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('New Makurdi test incident'), findsOneWidget);
-    expect(find.textContaining('INC-BEN-LGA-13-'), findsWidgets);
+    expect(find.textContaining('Makurdi LGA'), findsWidgets);
   });
 }
