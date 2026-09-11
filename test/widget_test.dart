@@ -77,9 +77,9 @@ void main() {
     expect(find.text('12,329'), findsWidgets);
   });
 
-  testWidgets('opens historical election intelligence and forecast scenarios',
+  testWidgets('opens source-aware election intelligence and forecast safeguards',
       (tester) async {
-    tester.view.physicalSize = const Size(1440, 1000);
+    tester.view.physicalSize = const Size(1600, 1100);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
@@ -88,16 +88,27 @@ void main() {
     await tester.tap(find.text('Election Intelligence').first);
     await tester.pumpAndSettle();
 
-    expect(find.text('2015'), findsOneWidget);
-    expect(find.text('2019'), findsOneWidget);
-    expect(find.text('2023'), findsOneWidget);
-    expect(find.text('434,473'), findsOneWidget);
+    expect(find.text('Election Intelligence Centre'), findsOneWidget);
+    expect(find.text('Why the election was won'), findsOneWidget);
+    expect(find.textContaining('2023 • APC • Hyacinth Iormem Alia'), findsOneWidget);
+    expect(find.text('Alia’s candidate-centered popularity'), findsOneWidget);
+
+    await tester.tap(find.textContaining('2015 • APC • Samuel Ortom'));
+    await tester.pumpAndSettle();
+    expect(find.text('Civil-service and pension backlash'), findsOneWidget);
+    expect(find.text('PDP primary and internal-party fracture'), findsOneWidget);
+
+    await tester.tap(find.textContaining('2019 • PDP • Samuel Ortom'));
+    await tester.pumpAndSettle();
+    expect(find.text('Security identity and anti-open-grazing stance'), findsOneWidget);
+    expect(find.text('Defender-of-Benue campaign narrative'), findsOneWidget);
 
     await tester.tap(find.text('Forecast & Scenarios'));
     await tester.pumpAndSettle();
     expect(find.text('Forecast engine status'), findsOneWidget);
     expect(find.text('Scenario simulator'), findsOneWidget);
     expect(find.textContaining('No fabricated win probability'), findsOneWidget);
+    expect(find.text('SCENARIO — NOT PREDICTION'), findsOneWidget);
   });
 
   testWidgets('shows campaign trends with prototype data warning',
