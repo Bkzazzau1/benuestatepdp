@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'analytics_pages.dart';
 import 'app_scope.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
 import 'scoped_communications.dart';
+import 'scoped_intelligence.dart';
 import 'scoped_map.dart';
 import 'scoped_operations.dart';
 import 'widgets.dart';
@@ -90,9 +90,9 @@ class _CampaignShellState extends State<CampaignShell> {
     OverviewPage(),
     ScopedBenueMapPage(),
     ScopedCampaignOperationsPage(),
-    HistoricalElectionsPage(),
-    ElectionIntelligencePage(),
-    CampaignTrendsPage(),
+    ScopedHistoricalElectionsPage(),
+    ScopedElectionIntelligencePage(),
+    ScopedCampaignTrendsPage(),
     MediaIntelligencePage(),
     CommunityIssuesPage(),
     ScopedSituationRoomPage(),
