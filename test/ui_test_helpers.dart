@@ -5,6 +5,9 @@ Future<void> pumpLoggedInAsDirectorGeneral(WidgetTester tester) async {
   await tester.pumpWidget(const BenueCampaignApp());
   await tester.pumpAndSettle();
   expect(find.text('Welcome to Campaign Command'), findsOneWidget);
-  await tester.tap(find.text('Enter as Director General'));
+  final signIn = find.text('Enter as Director General');
+  await tester.ensureVisible(signIn);
+  await tester.pumpAndSettle();
+  await tester.tap(signIn);
   await tester.pumpAndSettle();
 }

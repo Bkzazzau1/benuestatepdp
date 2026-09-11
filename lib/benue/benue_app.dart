@@ -336,7 +336,9 @@ class _DesktopSidebar extends StatelessWidget {
                   final active = selectedModule == item.module;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 4),
-                    child: ListTile(
+                    child: Material(
+                      color: Colors.white,
+                      child: ListTile(
                       dense: true,
                       minLeadingWidth: 28,
                       selected: active,
@@ -355,6 +357,7 @@ class _DesktopSidebar extends StatelessWidget {
                         ),
                       ),
                       onTap: () => onChoose(item.module),
+                      ),
                     ),
                   );
                 },
