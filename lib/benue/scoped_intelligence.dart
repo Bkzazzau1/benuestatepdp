@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'analytics_pages.dart';
 import 'app_scope.dart';
 import 'data.dart';
+import 'official_historical_page.dart';
 import 'pages.dart';
 import 'widgets.dart';
 
@@ -13,7 +13,7 @@ class ScopedHistoricalElectionsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final scope = CampaignScope.of(context);
     final lga = scope.lgaName;
-    if (lga == null) return const HistoricalElectionsPage();
+    if (lga == null) return const OfficialHistoricalElectionsPage();
 
     return ListView(
       padding: const EdgeInsets.all(28),
@@ -39,7 +39,7 @@ class ScopedHistoricalElectionsPage extends StatelessWidget {
               SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'Verified LGA-level results have not been imported yet. No LGA vote totals, turnout, swing or margins are fabricated. Statewide reference totals remain available separately.',
+                  'Verified LGA-level results have not been imported yet. No LGA vote totals, turnout, swing or margins are fabricated. Statewide INEC reference data remains available when the active scope is reset to Benue State.',
                   style: TextStyle(
                       color: Color(0xFF6D4A00), fontWeight: FontWeight.w700),
                 ),
@@ -55,7 +55,7 @@ class ScopedHistoricalElectionsPage extends StatelessWidget {
               const Text('LGA result import status',
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.w900)),
               const SizedBox(height: 4),
-              Text('$lga requires sourced election-result records for each comparison year.',
+              Text('$lga requires sourced INEC election-result records for each comparison year.',
                   style: const TextStyle(color: muted)),
               const SizedBox(height: 12),
               ...historicalElections.map((e) => ListTile(
@@ -64,7 +64,7 @@ class ScopedHistoricalElectionsPage extends StatelessWidget {
                     title: Text('$lga ${e.year} governorship result',
                         style: const TextStyle(fontWeight: FontWeight.w800)),
                     subtitle: const Text('No verified LGA figure loaded'),
-                    trailing: const StatusPill('SOURCE REQUIRED',
+                    trailing: const StatusPill('INEC SOURCE REQUIRED',
                         color: Color(0xFFD68A00)),
                   )),
             ],
@@ -79,7 +79,7 @@ class ScopedHistoricalElectionsPage extends StatelessWidget {
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.w900)),
               const SizedBox(height: 4),
               const Text(
-                'These known Benue totals are displayed only as statewide context.',
+                'These Benue totals are shown only as statewide context. Reset scope to Benue State to open the full INEC archive experience.',
                 style: TextStyle(color: muted),
               ),
               const SizedBox(height: 12),
