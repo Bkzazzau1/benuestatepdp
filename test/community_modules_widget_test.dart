@@ -5,7 +5,7 @@ import 'ui_test_helpers.dart';
 
 void main() {
   testWidgets('director general can open forum and meeting room', (tester) async {
-    tester.view.physicalSize = const Size(1600, 1100);
+    tester.view.physicalSize = const Size(1600, 1500);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
