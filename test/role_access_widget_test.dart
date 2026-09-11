@@ -21,6 +21,8 @@ void main() {
 
     expect(find.text('Command Overview'), findsOneWidget);
     expect(find.text('Communications'), findsOneWidget);
+    expect(find.text('Discussion Forum'), findsOneWidget);
+    expect(find.text('Meeting Room'), findsOneWidget);
     expect(find.text('Election Day'), findsOneWidget);
 
     expect(find.text('Data & Governance'), findsNothing);
