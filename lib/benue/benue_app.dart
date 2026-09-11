@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'analytics_pages.dart';
 import 'communications_page.dart';
+import 'geography_page.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
 import 'widgets.dart';
@@ -50,6 +51,7 @@ class _CampaignShellState extends State<CampaignShell> {
 
   static const destinations = <_Destination>[
     _Destination('Command Overview', Icons.dashboard_rounded),
+    _Destination('Benue Map', Icons.map_outlined),
     _Destination('Campaign Operations', Icons.campaign_outlined),
     _Destination('Historical Elections', Icons.history_rounded),
     _Destination('Election Intelligence', Icons.analytics_rounded),
@@ -67,6 +69,7 @@ class _CampaignShellState extends State<CampaignShell> {
 
   static const pages = <Widget>[
     OverviewPage(),
+    BenueGeographyPage(),
     CampaignOperationsPage(),
     HistoricalElectionsPage(),
     ElectionIntelligencePage(),
