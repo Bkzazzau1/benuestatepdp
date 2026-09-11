@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'analytics_pages.dart';
 import 'app_scope.dart';
-import 'communications_page.dart';
-import 'geography_page.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
+import 'scoped_communications.dart';
+import 'scoped_map.dart';
 import 'scoped_operations.dart';
 import 'widgets.dart';
 
@@ -88,7 +88,7 @@ class _CampaignShellState extends State<CampaignShell> {
 
   static const pages = <Widget>[
     OverviewPage(),
-    BenueGeographyPage(),
+    ScopedBenueMapPage(),
     ScopedCampaignOperationsPage(),
     HistoricalElectionsPage(),
     ElectionIntelligencePage(),
@@ -96,7 +96,7 @@ class _CampaignShellState extends State<CampaignShell> {
     MediaIntelligencePage(),
     CommunityIssuesPage(),
     ScopedSituationRoomPage(),
-    CommunicationsPage(),
+    ScopedCommunicationsPage(),
     ScopedFieldNetworkPage(),
     ScopedLogisticsTasksPage(),
     ScopedElectionDayPage(),
