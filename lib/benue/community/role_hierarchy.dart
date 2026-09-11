@@ -112,7 +112,9 @@ bool _sameAvailableScope(GeographicScope a, GeographicScope b) {
     return a.lgaId == b.lgaId && a.wardId == b.wardId;
   }
   if (a.lgaId != null) return a.lgaId == b.lgaId;
-  return false;
+  // A specialist account assigned at state level may convene a statewide
+  // location meeting even when it has no coordinator-creation authority.
+  return a.level == GeographyLevel.state && b.state == a.state;
 }
 
 /// Direct-report relationship used by the Meeting Room "My assignments" mode.
