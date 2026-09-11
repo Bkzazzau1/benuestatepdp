@@ -1,4 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:polisphere/benue/benue_app.dart';
+import 'package:polisphere/benue/welcome_app.dart';
 
-void main() => runApp(const BenueCampaignApp());
+void main() => runApp(const PoliSphereEntryApp());
