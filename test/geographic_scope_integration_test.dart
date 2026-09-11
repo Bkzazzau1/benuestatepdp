@@ -43,7 +43,15 @@ void main() {
 
     await tester.tap(find.text('Historical Elections').first);
     await tester.pumpAndSettle();
-    expect(find.text('Makurdi Historical Elections'), findsOneWidget);
-    expect(find.textContaining('No verified LGA figure loaded'), findsWidgets);
+
+    expect(find.text('Makurdi LGA'), findsWidgets);
+    expect(find.textContaining('2015 • 2019 • 2023 sourced comparison'), findsOneWidget);
+    expect(find.text('2019 governorship'), findsOneWidget);
+    expect(find.text('2023 governorship'), findsOneWidget);
+    expect(find.text('36,517'), findsOneWidget);
+    expect(find.text('29,414'), findsOneWidget);
+    expect(find.text('56,432'), findsOneWidget);
+    expect(find.text('12,329'), findsOneWidget);
+    expect(find.textContaining('No sourced LGA row'), findsOneWidget);
   });
 }
