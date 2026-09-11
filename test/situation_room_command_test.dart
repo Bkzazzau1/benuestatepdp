@@ -48,7 +48,8 @@ void main() {
 
     expect(find.text('Situation Room Command'), findsOneWidget);
     expect(find.text('LIVE OPERATIONS'), findsOneWidget);
-    expect(find.text('REALTIME BACKEND PENDING'), findsOneWidget);
+    expect(find.text('RESPONSE COMMAND'), findsOneWidget);
+    expect(find.textContaining('BACKEND'), findsNothing);
     expect(find.text('Incident command board'), findsOneWidget);
     expect(find.text('Response health'), findsOneWidget);
     expect(find.text('Open incidents'), findsWidgets);
