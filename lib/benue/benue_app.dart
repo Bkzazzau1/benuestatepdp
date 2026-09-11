@@ -5,6 +5,7 @@ import 'campaign_identity.dart';
 import 'command_actions.dart';
 import 'domain/models.dart';
 import 'domain/records_store.dart';
+import 'executive_dashboard.dart';
 import 'login_page.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
@@ -70,9 +71,7 @@ class _BenueCampaignAppState extends State<BenueCampaignApp> {
         ),
         navigationRailTheme: const NavigationRailThemeData(
           indicatorColor: Color(0xFFE4F3E8),
-          selectedIconTheme: IconThemeData(color: pdpGreen),
-          selectedLabelTextStyle:
-              TextStyle(color: pdpGreenDark, fontWeight: FontWeight.w800),
+          selectedIconTheme: IconData(color: pdpGreen) as IconThemeData?,
         ),
         sliderTheme: const SliderThemeData(
           activeTrackColor: pdpGreen,
@@ -123,38 +122,48 @@ class CampaignShell extends StatefulWidget {
 class _CampaignShellState extends State<CampaignShell> {
   AppModule selectedModule = AppModule.overview;
 
-  static const destinations = <_Destination>[
-    _Destination(AppModule.overview, 'Command Overview', Icons.dashboard_rounded,
-        RecordsOverviewPage()),
-    _Destination(AppModule.benueMap, 'Benue Map', Icons.map_outlined,
-        ScopedBenueMapPage()),
-    _Destination(AppModule.campaignOperations, 'Campaign Operations',
-        Icons.campaign_outlined, RecordsCampaignOperationsPage()),
-    _Destination(AppModule.historicalElections, 'Historical Elections',
-        Icons.history_rounded, ScopedHistoricalElectionsPage()),
-    _Destination(AppModule.electionIntelligence, 'Election Intelligence',
-        Icons.analytics_rounded, ScopedElectionIntelligencePage()),
-    _Destination(AppModule.campaignTrends, 'Campaign Trends',
-        Icons.trending_up_rounded, ScopedCampaignTrendsPage()),
-    _Destination(AppModule.mediaIntelligence, 'Media Intelligence',
-        Icons.public_rounded, MediaIntelligencePage()),
-    _Destination(AppModule.communityIssues, 'Community Issues',
-        Icons.forum_outlined, CommunityIssuesPage()),
-    _Destination(AppModule.situationRoom, 'Situation Room', Icons.radar_rounded,
-        RecordsSituationRoomPage()),
-    _Destination(AppModule.communications, 'Communications',
-        Icons.chat_bubble_outline_rounded, ScopedCommunicationsPage()),
-    _Destination(AppModule.fieldNetwork, 'Field Network', Icons.hub_rounded,
-        RecordsFieldNetworkPage()),
-    _Destination(AppModule.logisticsTasks, 'Logistics & Tasks',
-        Icons.inventory_2_outlined, RecordsLogisticsTasksPage()),
-    _Destination(AppModule.electionDay, 'Election Day',
-        Icons.how_to_vote_rounded, RecordsElectionDayPage()),
-    _Destination(AppModule.reportsDocuments, 'Reports & Documents',
-        Icons.description_outlined, ReportsDocumentsPage()),
-    _Destination(AppModule.dataGovernance, 'Data & Governance',
-        Icons.admin_panel_settings_rounded, RecordsGovernancePage()),
-  ];
+  List<_Destination> get destinations => <_Destination>[
+        _Destination(
+          AppModule.overview,
+          'Command Overview',
+          Icons.dashboard_rounded,
+          ExecutiveDashboardPage(
+            onOpenMap: () => choose(AppModule.benueMap),
+            onOpenSituationRoom: () => choose(AppModule.situationRoom),
+            onOpenCommunications: () => choose(AppModule.communications),
+            onOpenCampaignOperations: () => choose(AppModule.campaignOperations),
+            onOpenReports: () => choose(AppModule.reportsDocuments),
+          ),
+        ),
+        const _Destination(AppModule.benueMap, 'Benue Map', Icons.map_outlined,
+            ScopedBenueMapPage()),
+        const _Destination(AppModule.campaignOperations, 'Campaign Operations',
+            Icons.campaign_outlined, RecordsCampaignOperationsPage()),
+        const _Destination(AppModule.historicalElections, 'Historical Elections',
+            Icons.history_rounded, ScopedHistoricalElectionsPage()),
+        const _Destination(AppModule.electionIntelligence, 'Election Intelligence',
+            Icons.analytics_rounded, ScopedElectionIntelligencePage()),
+        const _Destination(AppModule.campaignTrends, 'Campaign Trends',
+            Icons.trending_up_rounded, ScopedCampaignTrendsPage()),
+        const _Destination(AppModule.mediaIntelligence, 'Media Intelligence',
+            Icons.public_rounded, MediaIntelligencePage()),
+        const _Destination(AppModule.communityIssues, 'Community Issues',
+            Icons.forum_outlined, CommunityIssuesPage()),
+        const _Destination(AppModule.situationRoom, 'Situation Room', Icons.radar_rounded,
+            RecordsSituationRoomPage()),
+        const _Destination(AppModule.communications, 'Communications',
+            Icons.chat_bubble_outline_rounded, ScopedCommunicationsPage()),
+        const _Destination(AppModule.fieldNetwork, 'Field Network', Icons.hub_rounded,
+            RecordsFieldNetworkPage()),
+        const _Destination(AppModule.logisticsTasks, 'Logistics & Tasks',
+            Icons.inventory_2_outlined, RecordsLogisticsTasksPage()),
+        const _Destination(AppModule.electionDay, 'Election Day',
+            Icons.how_to_vote_rounded, RecordsElectionDayPage()),
+        const _Destination(AppModule.reportsDocuments, 'Reports & Documents',
+            Icons.description_outlined, ReportsDocumentsPage()),
+        const _Destination(AppModule.dataGovernance, 'Data & Governance',
+            Icons.admin_panel_settings_rounded, RecordsGovernancePage()),
+      ];
 
   void choose(AppModule module) => setState(() => selectedModule = module);
 
