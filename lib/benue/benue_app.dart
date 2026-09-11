@@ -78,7 +78,7 @@ class _BenueCampaignAppState extends State<BenueCampaignApp> {
         ),
         navigationRailTheme: const NavigationRailThemeData(
           indicatorColor: Color(0xFFE4F3E8),
-          selectedIconTheme: IconDataThemeData(color: pdpGreen),
+          selectedIconTheme: IconThemeData(color: pdpGreen),
           selectedLabelTextStyle:
               TextStyle(color: pdpGreenDark, fontWeight: FontWeight.w800),
         ),
