@@ -18,6 +18,7 @@ class CampaignRecordsController extends ChangeNotifier {
     required List<CampaignAsset> assets,
     required List<FieldReport> fieldReports,
     required List<ElectionReadinessRecord> electionReadiness,
+    required List<AuditEvent> auditEvents,
   })  : _users = users,
         _assignments = assignments,
         _activities = activities,
@@ -25,7 +26,8 @@ class CampaignRecordsController extends ChangeNotifier {
         _tasks = tasks,
         _assets = assets,
         _fieldReports = fieldReports,
-        _electionReadiness = electionReadiness;
+        _electionReadiness = electionReadiness,
+        _auditEvents = auditEvents;
 
   factory CampaignRecordsController.prototypeSeed() {
     final users = <CampaignUser>[];
@@ -36,6 +38,7 @@ class CampaignRecordsController extends ChangeNotifier {
     final assets = <CampaignAsset>[];
     final reports = <FieldReport>[];
     final readiness = <ElectionReadinessRecord>[];
+    final audit = <AuditEvent>[];
 
     final baseTime = DateTime.utc(2026, 9, 11, 9);
 
@@ -177,6 +180,17 @@ class CampaignRecordsController extends ChangeNotifier {
       ));
     }
 
+    audit.add(AuditEvent(
+      id: 'AUD-SYSTEM-0001',
+      actorId: 'SYSTEM',
+      action: 'prototype_seed_loaded',
+      entityType: 'CampaignRecords',
+      entityId: 'BENUE-PROTOTYPE-SEED',
+      timestamp: baseTime,
+      detail:
+          'Loaded provenance-labelled prototype operational records for 23 LGAs.',
+    ));
+
     return CampaignRecordsController._(
       users: users,
       assignments: assignments,
@@ -186,6 +200,7 @@ class CampaignRecordsController extends ChangeNotifier {
       assets: assets,
       fieldReports: reports,
       electionReadiness: readiness,
+      auditEvents: audit,
     );
   }
 
@@ -197,6 +212,8 @@ class CampaignRecordsController extends ChangeNotifier {
   final List<CampaignAsset> _assets;
   final List<FieldReport> _fieldReports;
   final List<ElectionReadinessRecord> _electionReadiness;
+  final List<AuditEvent> _auditEvents;
+  int _auditSequence = 1;
 
   List<CampaignUser> get users => List.unmodifiable(_users);
   List<FieldAssignment> get assignments => List.unmodifiable(_assignments);
@@ -207,6 +224,7 @@ class CampaignRecordsController extends ChangeNotifier {
   List<FieldReport> get fieldReports => List.unmodifiable(_fieldReports);
   List<ElectionReadinessRecord> get electionReadiness =>
       List.unmodifiable(_electionReadiness);
+  List<AuditEvent> get auditEvents => List.unmodifiable(_auditEvents);
 
   bool _matchesLga(GeographicScope scope, String? lgaId) =>
       lgaId == null || scope.lgaId == lgaId;
@@ -306,27 +324,97 @@ class CampaignRecordsController extends ChangeNotifier {
     return null;
   }
 
-  void addTask(CampaignTask task) {
+  void _audit({
+    required String actorId,
+    required String action,
+    required String entityType,
+    required String entityId,
+    String? detail,
+  }) {
+    _auditSequence += 1;
+    _auditEvents.add(AuditEvent(
+      id: 'AUD-${_auditSequence.toString().padLeft(6, '0')}',
+      actorId: actorId,
+      action: action,
+      entityType: entityType,
+      entityId: entityId,
+      timestamp: DateTime.now().toUtc(),
+      detail: detail,
+    ));
+  }
+
+  void addTask(CampaignTask task, {String actorId = 'SYSTEM'}) {
     if (_tasks.any((item) => item.id == task.id)) {
       throw StateError('Duplicate task id: ${task.id}');
     }
     _tasks.add(task);
+    _audit(
+      actorId: actorId,
+      action: 'task_created',
+      entityType: 'CampaignTask',
+      entityId: task.id,
+      detail: 'Scope: ${task.scope.label}; incident: ${task.incidentId ?? 'none'}',
+    );
     notifyListeners();
   }
 
-  void addIncident(CampaignIncident incident) {
+  void addIncident(CampaignIncident incident, {String actorId = 'SYSTEM'}) {
     if (_incidents.any((item) => item.id == incident.id)) {
       throw StateError('Duplicate incident id: ${incident.id}');
     }
     _incidents.add(incident);
+    _audit(
+      actorId: actorId,
+      action: 'incident_created',
+      entityType: 'CampaignIncident',
+      entityId: incident.id,
+      detail: 'Scope: ${incident.scope.label}; severity: ${incident.severity.name}',
+    );
     notifyListeners();
   }
 
-  void addFieldReport(FieldReport report) {
+  void addFieldReport(FieldReport report, {String actorId = 'SYSTEM'}) {
     if (_fieldReports.any((item) => item.id == report.id)) {
       throw StateError('Duplicate field-report id: ${report.id}');
     }
     _fieldReports.add(report);
+    _audit(
+      actorId: actorId,
+      action: 'field_report_created',
+      entityType: 'FieldReport',
+      entityId: report.id,
+      detail: 'Scope: ${report.scope.label}; incident: ${report.incidentId ?? 'none'}',
+    );
+    notifyListeners();
+  }
+
+  void addActivity(CampaignActivity activity, {String actorId = 'SYSTEM'}) {
+    if (_activities.any((item) => item.id == activity.id)) {
+      throw StateError('Duplicate activity id: ${activity.id}');
+    }
+    _activities.add(activity);
+    _audit(
+      actorId: actorId,
+      action: 'activity_created',
+      entityType: 'CampaignActivity',
+      entityId: activity.id,
+      detail: 'Scope: ${activity.scope.label}',
+    );
+    notifyListeners();
+  }
+
+  void addAsset(CampaignAsset asset, {String actorId = 'SYSTEM'}) {
+    if (_assets.any((item) => item.id == asset.id)) {
+      throw StateError('Duplicate asset id: ${asset.id}');
+    }
+    _assets.add(asset);
+    _audit(
+      actorId: actorId,
+      action: 'asset_created',
+      entityType: 'CampaignAsset',
+      entityId: asset.id,
+      detail: 'Scope: ${asset.scope.label}',
+    );
     notifyListeners();
   }
 }
