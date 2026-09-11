@@ -5,11 +5,11 @@ import 'campaign_identity.dart';
 import 'command_actions.dart';
 import 'domain/models.dart';
 import 'domain/records_store.dart';
-import 'executive_dashboard.dart';
 import 'login_page.dart';
 import 'operations_pages.dart';
 import 'record_pages.dart';
 import 'records_governance.dart';
+import 'role_command_views.dart';
 import 'scoped_communications.dart';
 import 'scoped_intelligence.dart';
 import 'scoped_map.dart';
@@ -128,12 +128,9 @@ class _CampaignShellState extends State<CampaignShell> {
           AppModule.overview,
           'Command Overview',
           Icons.dashboard_rounded,
-          ExecutiveDashboardPage(
-            onOpenMap: () => choose(AppModule.benueMap),
-            onOpenSituationRoom: () => choose(AppModule.situationRoom),
-            onOpenCommunications: () => choose(AppModule.communications),
-            onOpenCampaignOperations: () => choose(AppModule.campaignOperations),
-            onOpenReports: () => choose(AppModule.reportsDocuments),
+          RoleCommandRouter(
+            role: CampaignSession.of(context).role!,
+            onOpenModule: choose,
           ),
         ),
         const _Destination(AppModule.benueMap, 'Benue Map', Icons.map_outlined,
