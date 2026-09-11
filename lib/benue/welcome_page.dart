@@ -46,7 +46,7 @@ class _DesktopWelcome extends StatelessWidget {
             borderRadius: BorderRadius.circular(34),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(.08),
+                color: Colors.black.withValues(alpha: .08),
                 blurRadius: 45,
                 offset: const Offset(0, 18),
               ),
@@ -55,10 +55,7 @@ class _DesktopWelcome extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: Row(
             children: [
-              Expanded(
-                flex: 12,
-                child: _CandidateHero(),
-              ),
+              const Expanded(flex: 12, child: _CandidateHero()),
               Expanded(
                 flex: 13,
                 child: _WelcomeContent(onEnter: onEnter),
@@ -78,12 +75,12 @@ class _MobileWelcome extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         children: [
           Container(
-            height: 390,
+            height: 430,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(.09),
+                  color: Colors.black.withValues(alpha: .09),
                   blurRadius: 28,
                   offset: const Offset(0, 12),
                 ),
@@ -111,88 +108,116 @@ class _CandidateHero extends StatelessWidget {
   final bool compact;
 
   @override
-  Widget build(BuildContext context) => Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            CampaignIdentity.portraitAsset,
-            fit: BoxFit.cover,
-            alignment: const Alignment(0, -0.10),
-            errorBuilder: (_, __, ___) => Container(
-              color: const Color(0xFF173526),
-              alignment: Alignment.center,
-              child: const Icon(
-                Icons.person_rounded,
-                color: Colors.white54,
-                size: 130,
+  Widget build(BuildContext context) => Container(
+        color: const Color(0xFF163126),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF10261D), Color(0xFF1A3C2C)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
             ),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0x08000000),
-                  Color(0x22000000),
-                  Color(0xD9052A18),
+            Positioned(
+              left: compact ? 18 : 28,
+              right: compact ? 18 : 28,
+              top: compact ? 58 : 72,
+              bottom: compact ? 104 : 126,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(compact ? 24 : 30),
+                child: Container(
+                  color: const Color(0xFF343230),
+                  alignment: Alignment.center,
+                  child: Image.asset(
+                    CampaignIdentity.portraitAsset,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.center,
+                    filterQuality: FilterQuality.high,
+                    errorBuilder: (_, __, ___) => const Center(
+                      child: Icon(
+                        Icons.person_rounded,
+                        color: Colors.white54,
+                        size: 130,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0x00000000),
+                    Color(0x08000000),
+                    Color(0xC8052A18),
+                  ],
+                  stops: [0, .62, 1],
+                ),
+              ),
+            ),
+            Positioned(
+              left: compact ? 20 : 34,
+              right: compact ? 20 : 34,
+              top: compact ? 20 : 30,
+              child: const Row(
+                children: [
+                  _PdpMark(),
+                  Spacer(),
+                  _SecureBadge(),
                 ],
-                stops: [0, .50, 1],
               ),
             ),
-          ),
-          Positioned(
-            left: compact ? 20 : 34,
-            right: compact ? 20 : 34,
-            top: compact ? 20 : 30,
-            child: const Row(
-              children: [
-                _PdpMark(),
-                Spacer(),
-                _SecureBadge(),
-              ],
+            Positioned(
+              left: compact ? 22 : 38,
+              right: compact ? 22 : 38,
+              bottom: compact ? 22 : 34,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'BENUE STATE',
+                    style: TextStyle(
+                      color: Color(0xFFA9E0BC),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 2.2,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    CampaignIdentity.candidateName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: compact ? 24 : 32,
+                      fontWeight: FontWeight.w900,
+                      height: 1.05,
+                    ),
+                  ),
+                  const SizedBox(height: 7),
+                  Text(
+                    CampaignIdentity.candidateTitle,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Positioned(
-            left: compact ? 22 : 38,
-            right: compact ? 22 : 38,
-            bottom: compact ? 22 : 34,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'BENUE STATE',
-                  style: TextStyle(
-                    color: Color(0xFFA9E0BC),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 2.2,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  CampaignIdentity.candidateName,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: compact ? 25 : 34,
-                    fontWeight: FontWeight.w900,
-                    height: 1.05,
-                  ),
-                ),
-                const SizedBox(height: 7),
-                Text(
-                  CampaignIdentity.candidateTitle,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       );
 }
 
@@ -238,7 +263,7 @@ class _WelcomeContent extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             Text(
-              'Campaign Command & Situation Room',
+              '${CampaignIdentity.candidateName} Campaign Command & Situation Room',
               style: TextStyle(
                 color: pdpGreenDark,
                 fontSize: compact ? 17 : 21,
@@ -410,7 +435,7 @@ class _PdpMark extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(.92),
+          color: Colors.white.withValues(alpha: .92),
           borderRadius: BorderRadius.circular(12),
         ),
         child: const Text(
@@ -432,7 +457,7 @@ class _SecureBadge extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 8),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(.30),
+          color: Colors.black.withValues(alpha: .30),
           borderRadius: BorderRadius.circular(999),
           border: Border.all(color: Colors.white24),
         ),
@@ -470,7 +495,7 @@ class _WelcomeBackground extends StatelessWidget {
               height: 440,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: pdpGreen.withOpacity(.06),
+                color: pdpGreen.withValues(alpha: .06),
               ),
             ),
           ),
@@ -482,7 +507,7 @@ class _WelcomeBackground extends StatelessWidget {
               height: 430,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: pdpRed.withOpacity(.04),
+                color: pdpRed.withValues(alpha: .04),
               ),
             ),
           ),
