@@ -48,9 +48,9 @@ flutter pub get
 flutter run
 ```
 
-The new Benue experience uses Flutter SDK components only; no additional package is required for this prototype layer.
+The Benue experience uses Flutter SDK components only; no additional package is required for this prototype layer.
 
-## Active source structure
+## Source structure
 
 - `lib/main.dart` — application entry point
 - `lib/benue/benue_app.dart` — responsive statewide command shell
@@ -59,4 +59,4 @@ The new Benue experience uses Flutter SDK components only; no additional package
 - `lib/benue/widgets.dart` — shared dashboard components
 - `test/widget_test.dart` — core Benue prototype widget coverage
 
-The previous `lib/src/` implementation remains in the repository for reference during migration but is no longer the launched application on this branch.
+The previous constituency-specific `lib/src/` implementation has been removed from this overhaul branch so the repository has a single active product architecture.
