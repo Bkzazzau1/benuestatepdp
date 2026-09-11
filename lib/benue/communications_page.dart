@@ -11,106 +11,88 @@ class CommunicationsPage extends StatefulWidget {
 
 class _CommunicationsPageState extends State<CommunicationsPage> {
   int selectedConversation = 0;
-  String activeFilter = 'All';
-  String searchQuery = '';
-
+  String filter = 'All';
+  String search = '';
   final composer = TextEditingController();
   final searchController = TextEditingController();
 
   final conversations = <_Conversation>[
     const _Conversation(
       title: 'Benue State Command',
-      preview: 'Statewide operations coordination',
+      preview: 'Statewide campaign coordination',
+      scope: 'Statewide',
+      members: 34,
       unread: 12,
       type: _ConversationType.group,
-      members: 34,
-      scope: 'Statewide Operations',
     ),
     const _Conversation(
       title: 'Makurdi Operations',
       preview: 'Venue readiness updated',
+      scope: 'Makurdi LGA',
+      members: 18,
       unread: 4,
       type: _ConversationType.group,
-      members: 18,
-      scope: 'Makurdi LGA',
     ),
     const _Conversation(
-      title: 'Situation Room — INC-021',
-      preview: 'Legal desk joined the incident room',
+      title: 'Situation Room',
+      preview: 'Incident follow-up in progress',
+      scope: 'Response Team',
+      members: 11,
       unread: 2,
       type: _ConversationType.incident,
-      members: 11,
-      scope: 'Critical incident',
-      linkedIncident: 'INC-021',
     ),
     const _Conversation(
       title: 'Media & Intelligence',
       preview: 'Daily brief ready for review',
+      scope: 'State Media Desk',
+      members: 16,
       unread: 0,
       type: _ConversationType.group,
-      members: 16,
-      scope: 'State Media Desk',
     ),
     const _Conversation(
       title: 'Logistics Command',
-      preview: 'Vehicle 07 maintenance cleared',
+      preview: 'Vehicle movement update',
+      scope: 'State Logistics',
+      members: 22,
       unread: 0,
       type: _ConversationType.group,
-      members: 22,
-      scope: 'State Logistics',
     ),
     const _Conversation(
       title: 'LGA Coordinators',
-      preview: 'Ward coverage request sent',
+      preview: 'Ward coverage update requested',
+      scope: '23 LGAs',
+      members: 27,
       unread: 7,
       type: _ConversationType.group,
-      members: 27,
-      scope: '23 LGAs',
-    ),
-    const _Conversation(
-      title: 'Election Readiness',
-      preview: 'Agent roster import pending',
-      unread: 0,
-      type: _ConversationType.group,
-      members: 31,
-      scope: 'Election Operations',
     ),
     const _Conversation(
       title: 'Operations Director',
       preview: 'Direct message',
+      scope: 'Direct message',
+      members: 2,
       unread: 1,
       type: _ConversationType.direct,
-      members: 2,
-      scope: 'Direct message',
     ),
   ];
 
-  final messagesByConversation = <int, List<_Message>>{
+  final messages = <int, List<_Message>>{
     0: [
       const _Message(
         sender: 'State Operations Desk',
-        text:
-            'Makurdi team, confirm venue readiness and vehicle movement before 16:00.',
+        text: 'Makurdi team, confirm venue readiness and vehicle movement before 16:00.',
         time: '14:18',
-        mine: false,
-        status: 'Read',
       ),
       const _Message(
         sender: 'Makurdi Coordinator',
-        text:
-            'Venue team is on ground. Generator and public-address system have arrived.',
+        text: 'Venue team is on ground. Generator and public-address system have arrived.',
         time: '14:22',
-        mine: false,
-        status: 'Read',
-        attachmentLabel: 'Venue readiness checklist',
+        attachment: 'Venue readiness checklist',
       ),
       const _Message(
         sender: 'You',
-        text:
-            'Good. Attach the readiness checklist and flag any missing item before departure.',
+        text: 'Good. Flag any missing item before departure.',
         time: '14:24',
         mine: true,
-        status: 'Read by 8',
       ),
     ],
     1: [
@@ -118,55 +100,32 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
         sender: 'Makurdi Coordinator',
         text: 'Venue access confirmed. Security liaison has checked the entry points.',
         time: '13:40',
-        mine: false,
-        status: 'Read',
       ),
       const _Message(
         sender: 'You',
         text: 'Please complete the vehicle and fuel checklist before the convoy moves.',
         time: '13:44',
         mine: true,
-        status: 'Delivered',
       ),
     ],
     2: [
       const _Message(
         sender: 'Situation Room Desk',
-        text:
-            'INC-021 opened after a logistics interruption report. Verification is in progress.',
+        text: 'A logistics interruption has been reported and assigned for follow-up.',
         time: '12:06',
-        mine: false,
-        status: 'Read',
-        incidentId: 'INC-021',
       ),
       const _Message(
         sender: 'Legal Desk',
-        text:
-            'Legal team joined. Preserve original photos, timestamps and reporter identity.',
+        text: 'Please preserve the original photos, timestamps and reporter details.',
         time: '12:11',
-        mine: false,
-        status: 'Read',
-        incidentId: 'INC-021',
-      ),
-      const _Message(
-        sender: 'You',
-        text:
-            'Assign operations follow-up and keep the incident room open until evidence review is complete.',
-        time: '12:13',
-        mine: true,
-        status: 'Read by 6',
-        incidentId: 'INC-021',
       ),
     ],
     3: [
       const _Message(
         sender: 'Media Desk',
-        text:
-            'Morning media brief is ready. Two claims remain in the verification queue.',
+        text: 'Morning media brief is ready. Two public claims are still under review.',
         time: '09:26',
-        mine: false,
-        status: 'Read',
-        attachmentLabel: 'Morning media brief',
+        attachment: 'Morning media brief',
       ),
     ],
     4: [
@@ -174,37 +133,20 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
         sender: 'Fleet Desk',
         text: 'Vehicle 07 has been cleared after maintenance inspection.',
         time: '10:18',
-        mine: false,
-        status: 'Read',
       ),
     ],
     5: [
       const _Message(
         sender: 'Field Operations',
-        text:
-            'All LGA coordinators should update ward coverage and outstanding personnel gaps today.',
+        text: 'All LGA coordinators should update ward coverage and personnel gaps today.',
         time: '08:15',
-        mine: false,
-        status: 'Read',
       ),
     ],
     6: [
       const _Message(
-        sender: 'Election Operations',
-        text:
-            'Verified polling-unit agent roster is not yet loaded. Do not display inferred coverage figures.',
-        time: '11:03',
-        mine: false,
-        status: 'Read',
-      ),
-    ],
-    7: [
-      const _Message(
         sender: 'Operations Director',
         text: 'Please send the latest statewide operations summary when ready.',
         time: '14:02',
-        mine: false,
-        status: 'Read',
       ),
     ],
   };
@@ -216,30 +158,30 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
     super.dispose();
   }
 
-  _Conversation get currentConversation => conversations[selectedConversation];
+  _Conversation get current => conversations[selectedConversation];
   List<_Message> get currentMessages =>
-      messagesByConversation.putIfAbsent(selectedConversation, () => []);
+      messages.putIfAbsent(selectedConversation, () => <_Message>[]);
 
   List<MapEntry<int, _Conversation>> get visibleConversations {
-    final q = searchQuery.trim().toLowerCase();
+    final q = search.trim().toLowerCase();
     return conversations.asMap().entries.where((entry) {
-      final item = entry.value;
-      final matchesSearch = q.isEmpty ||
-          item.title.toLowerCase().contains(q) ||
-          item.preview.toLowerCase().contains(q) ||
-          item.scope.toLowerCase().contains(q);
-      final matchesFilter = switch (activeFilter) {
-        'Unread' => item.unread > 0,
-        'Groups' => item.type == _ConversationType.group,
-        'Incidents' => item.type == _ConversationType.incident,
-        'Direct' => item.type == _ConversationType.direct,
+      final conversation = entry.value;
+      final searchMatch = q.isEmpty ||
+          conversation.title.toLowerCase().contains(q) ||
+          conversation.preview.toLowerCase().contains(q) ||
+          conversation.scope.toLowerCase().contains(q);
+      final filterMatch = switch (filter) {
+        'Unread' => conversation.unread > 0,
+        'Groups' => conversation.type == _ConversationType.group,
+        'Incidents' => conversation.type == _ConversationType.incident,
+        'Direct' => conversation.type == _ConversationType.direct,
         _ => true,
       };
-      return matchesSearch && matchesFilter;
+      return searchMatch && filterMatch;
     }).toList();
   }
 
-  void _send() {
+  void sendMessage() {
     final text = composer.text.trim();
     if (text.isEmpty) return;
     setState(() {
@@ -248,25 +190,245 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
         text: text,
         time: TimeOfDay.now().format(context),
         mine: true,
-        status: 'Sent',
-        incidentId: currentConversation.linkedIncident,
       ));
       composer.clear();
     });
   }
 
-  void _selectConversation(int index) {
+  void selectConversation(int index) {
     setState(() {
       selectedConversation = index;
-      final current = conversations[index];
-      if (current.unread > 0) {
-        conversations[index] = current.copyWith(unread: 0);
-      }
+      final item = conversations[index];
+      if (item.unread > 0) conversations[index] = item.copyWith(unread: 0);
     });
   }
 
-  void _showSnack(String text) => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(text), behavior: SnackBarBehavior.floating),
+  @override
+  Widget build(BuildContext context) => LayoutBuilder(
+        builder: (context, constraints) {
+          final wide = constraints.maxWidth >= 900;
+          if (!wide) {
+            return Column(
+              children: [
+                SizedBox(height: 320, child: _conversationList()),
+                const Divider(height: 1),
+                Expanded(child: _chat()),
+              ],
+            );
+          }
+          return Row(
+            children: [
+              SizedBox(width: 360, child: _conversationList()),
+              const VerticalDivider(width: 1),
+              Expanded(child: _chat()),
+            ],
+          );
+        },
+      );
+
+  Widget _conversationList() => ColoredBox(
+        color: Colors.white,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 12),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Communications',
+                            style: TextStyle(
+                                color: ink,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w900)),
+                        SizedBox(height: 3),
+                        Text('Campaign conversations and coordination',
+                            style: TextStyle(color: muted, fontSize: 10.5)),
+                      ],
+                    ),
+                  ),
+                  IconButton.filledTonal(
+                    tooltip: 'New conversation',
+                    onPressed: _newConversation,
+                    icon: const Icon(Icons.add_comment_outlined),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: TextField(
+                controller: searchController,
+                onChanged: (value) => setState(() => search = value),
+                decoration: const InputDecoration(
+                  hintText: 'Search conversations',
+                  prefixIcon: Icon(Icons.search_rounded),
+                  isDense: true,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: Row(
+                children: ['All', 'Unread', 'Groups', 'Incidents', 'Direct']
+                    .map((item) => Padding(
+                          padding: const EdgeInsets.only(right: 7),
+                          child: ChoiceChip(
+                            label: Text(item),
+                            selected: filter == item,
+                            onSelected: (_) => setState(() => filter = item),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                itemCount: visibleConversations.length,
+                itemBuilder: (context, index) {
+                  final entry = visibleConversations[index];
+                  final conversation = entry.value;
+                  final active = entry.key == selectedConversation;
+                  return ListTile(
+                    selected: active,
+                    selectedTileColor: const Color(0xFFE8F4EB),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(13)),
+                    onTap: () => selectConversation(entry.key),
+                    leading: CircleAvatar(
+                      backgroundColor: _conversationColor(conversation.type)
+                          .withValues(alpha: .10),
+                      child: Icon(_conversationIcon(conversation.type),
+                          color: _conversationColor(conversation.type), size: 19),
+                    ),
+                    title: Text(conversation.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            color: ink, fontWeight: FontWeight.w900, fontSize: 12)),
+                    subtitle: Text(conversation.preview,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: muted, fontSize: 10)),
+                    trailing: conversation.unread > 0
+                        ? CircleAvatar(
+                            radius: 11,
+                            backgroundColor: pdpGreen,
+                            child: Text('${conversation.unread}',
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 8,
+                                    fontWeight: FontWeight.w900)),
+                          )
+                        : null,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _chat() => ColoredBox(
+        color: const Color(0xFFF5F7F5),
+        child: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor:
+                        _conversationColor(current.type).withValues(alpha: .10),
+                    child: Icon(_conversationIcon(current.type),
+                        color: _conversationColor(current.type)),
+                  ),
+                  const SizedBox(width: 11),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(current.title,
+                            style: const TextStyle(
+                                color: ink,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900)),
+                        const SizedBox(height: 2),
+                        Text('${current.scope} • ${current.members} members',
+                            style: const TextStyle(color: muted, fontSize: 10.5)),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Create task',
+                    onPressed: _createTask,
+                    icon: const Icon(Icons.task_alt_outlined),
+                  ),
+                  IconButton(
+                    tooltip: 'Broadcast',
+                    onPressed: _broadcast,
+                    icon: const Icon(Icons.campaign_outlined),
+                  ),
+                  const IconButton(
+                    tooltip: 'More',
+                    onPressed: null,
+                    icon: Icon(Icons.more_horiz_rounded),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.all(18),
+                itemCount: currentMessages.length,
+                itemBuilder: (context, index) =>
+                    _MessageBubble(message: currentMessages[index]),
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.all(12),
+              child: SafeArea(
+                top: false,
+                child: Row(
+                  children: [
+                    IconButton(
+                      tooltip: 'Attach',
+                      onPressed: () {},
+                      icon: const Icon(Icons.attach_file_rounded),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: composer,
+                        minLines: 1,
+                        maxLines: 5,
+                        onSubmitted: (_) => sendMessage(),
+                        decoration: const InputDecoration(
+                          hintText: 'Write a message…',
+                          isDense: true,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton.filled(
+                      tooltip: 'Send',
+                      onPressed: sendMessage,
+                      icon: const Icon(Icons.send_rounded),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       );
 
   Future<void> _newConversation() async {
@@ -275,7 +437,7 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
     final created = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('New operational conversation'),
+        title: const Text('New conversation'),
         content: SizedBox(
           width: 430,
           child: Column(
@@ -292,58 +454,55 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
               TextField(
                 controller: scope,
                 decoration: const InputDecoration(
-                  labelText: 'Operational scope',
+                  labelText: 'Campaign area or team',
                   hintText: 'Example: Gboko LGA',
                 ),
-              ),
-              const SizedBox(height: 14),
-              const Text(
-                'Prototype only: production creation will enforce role and geography permissions.',
-                style: TextStyle(color: muted),
               ),
             ],
           ),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Create')),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Create'),
+          ),
         ],
       ),
     );
-    if (created != true || title.text.trim().isEmpty) return;
-    setState(() {
-      conversations.add(_Conversation(
-        title: title.text.trim(),
-        preview: 'New operational channel',
-        unread: 0,
-        type: _ConversationType.group,
-        members: 1,
-        scope: scope.text.trim().isEmpty ? 'Campaign operations' : scope.text.trim(),
-      ));
-      selectedConversation = conversations.length - 1;
-      messagesByConversation[selectedConversation] = [];
-    });
+    if (created == true && title.text.trim().isNotEmpty) {
+      setState(() {
+        conversations.add(_Conversation(
+          title: title.text.trim(),
+          preview: 'New conversation',
+          scope: scope.text.trim().isEmpty ? 'Campaign team' : scope.text.trim(),
+          members: 1,
+          unread: 0,
+          type: _ConversationType.group,
+        ));
+        selectedConversation = conversations.length - 1;
+        messages[selectedConversation] = [];
+      });
+    }
     title.dispose();
     scope.dispose();
   }
 
-  Future<void> _composeBroadcast() async {
+  Future<void> _broadcast() async {
     final body = TextEditingController();
     String target = 'All LGA coordinators';
     final sent = await showDialog<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setLocalState) => AlertDialog(
-          title: const Text('Operational broadcast'),
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Campaign broadcast'),
           content: SizedBox(
             width: 480,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DropdownButtonFormField<String>(
                   initialValue: target,
@@ -361,7 +520,7 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
                         value: 'Logistics teams', child: Text('Logistics teams')),
                   ],
                   onChanged: (value) {
-                    if (value != null) setLocalState(() => target = value);
+                    if (value != null) setDialogState(() => target = value);
                   },
                 ),
                 const SizedBox(height: 12),
@@ -370,22 +529,18 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
                   minLines: 3,
                   maxLines: 6,
                   decoration: const InputDecoration(
-                    labelText: 'Broadcast message',
-                    hintText: 'Write a concise operational notice...',
+                    labelText: 'Message',
+                    hintText: 'Write a campaign notice…',
                   ),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Production broadcasts will record sender, audience, time and delivery state in the audit trail.',
-                  style: TextStyle(color: muted),
                 ),
               ],
             ),
           ),
           actions: [
             TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel')),
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
             FilledButton.icon(
               onPressed: () => Navigator.pop(context, true),
               icon: const Icon(Icons.campaign_outlined),
@@ -395,8 +550,10 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
         ),
       ),
     );
-    if (sent == true && body.text.trim().isNotEmpty) {
-      _showSnack('Broadcast queued for $target');
+    if (sent == true && body.text.trim().isNotEmpty && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Broadcast sent to $target')),
+      );
     }
     body.dispose();
   }
@@ -407,7 +564,7 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
     final created = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Create task from conversation'),
+        title: const Text('Create task'),
         content: SizedBox(
           width: 450,
           child: Column(
@@ -417,7 +574,7 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
                 controller: task,
                 decoration: const InputDecoration(
                   labelText: 'Task',
-                  hintText: 'Example: Verify venue readiness checklist',
+                  hintText: 'Example: Confirm venue readiness',
                 ),
               ),
               const SizedBox(height: 12),
@@ -425,534 +582,74 @@ class _CommunicationsPageState extends State<CommunicationsPage> {
                 controller: owner,
                 decoration: const InputDecoration(labelText: 'Owner'),
               ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  const Icon(Icons.link_rounded, size: 18, color: pdpGreen),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Linked to ${currentConversation.title}',
-                      style: const TextStyle(color: muted),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
           FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Create task')),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Create task'),
+          ),
         ],
       ),
     );
-    if (created == true && task.text.trim().isNotEmpty) {
-      _showSnack('Task created for ${owner.text.trim()}');
+    if (created == true && task.text.trim().isNotEmpty && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Task created for ${owner.text.trim()}')),
+      );
     }
     task.dispose();
     owner.dispose();
   }
+}
 
-  Future<void> _linkIncident() async {
-    final incident = TextEditingController(
-        text: currentConversation.linkedIncident ?? 'INC-');
-    final linked = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Link incident'),
-        content: SizedBox(
-          width: 420,
-          child: TextField(
-            controller: incident,
-            decoration: const InputDecoration(
-              labelText: 'Incident ID',
-              hintText: 'INC-021',
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
-          FilledButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Link')),
-        ],
-      ),
-    );
-    if (linked == true && incident.text.trim().isNotEmpty) {
-      final id = incident.text.trim().toUpperCase();
-      setState(() {
-        conversations[selectedConversation] =
-            currentConversation.copyWith(linkedIncident: id);
-      });
-      _showSnack('${currentConversation.title} linked to $id');
-    }
-    incident.dispose();
-  }
+enum _ConversationType { group, incident, direct }
 
-  Future<void> _shareLocation() async {
-    final accepted = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Share operational location?'),
-        content: const Text(
-          'Location sharing must be explicit and purpose-limited. This prototype will add a location card to the conversation; production will request device permission only after confirmation.',
-        ),
-        actions: [
-          TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
-          FilledButton.icon(
-            onPressed: () => Navigator.pop(context, true),
-            icon: const Icon(Icons.location_on_outlined),
-            label: const Text('Share location'),
-          ),
-        ],
-      ),
-    );
-    if (accepted != true) return;
-    setState(() {
-      currentMessages.add(_Message(
-        sender: 'You',
-        text: 'Operational location shared with authorized channel members.',
-        time: TimeOfDay.now().format(context),
-        mine: true,
-        status: 'Sent',
-        locationLabel: 'Location card • permission required in production',
-        incidentId: currentConversation.linkedIncident,
-      ));
-    });
-  }
+class _Conversation {
+  const _Conversation({
+    required this.title,
+    required this.preview,
+    required this.scope,
+    required this.members,
+    required this.unread,
+    required this.type,
+  });
 
-  Future<void> _attachmentMenu() async {
-    final choice = await showModalBottomSheet<String>(
-      context: context,
-      showDragHandle: true,
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Attach to message',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-              ),
-              const SizedBox(height: 10),
-              _AttachmentOption(Icons.description_outlined, 'Document',
-                  () => Navigator.pop(context, 'Document')),
-              _AttachmentOption(Icons.photo_outlined, 'Photo / image',
-                  () => Navigator.pop(context, 'Photo')),
-              _AttachmentOption(Icons.mic_none_rounded, 'Audio file',
-                  () => Navigator.pop(context, 'Audio')),
-              _AttachmentOption(Icons.location_on_outlined, 'Location',
-                  () => Navigator.pop(context, 'Location')),
-            ],
-          ),
-        ),
-      ),
-    );
-    if (choice == null) return;
-    if (choice == 'Location') {
-      await _shareLocation();
-    } else {
-      _showSnack('$choice attachment selected — native picker connects in production');
-    }
-  }
+  final String title;
+  final String preview;
+  final String scope;
+  final int members;
+  final int unread;
+  final _ConversationType type;
 
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) {
-          final wide = constraints.maxWidth >= 960;
-          return ListView(
-            padding: const EdgeInsets.all(28),
-            children: [
-              const PageHeading(
-                title: 'Communications',
-                subtitle:
-                    'Secure internal messaging for campaign command, LGA teams, wards, field officers and incident rooms.',
-                trailing: StatusPill('INTERNAL ONLY'),
-              ),
-              const SizedBox(height: 18),
-              const _CommunicationsNotice(),
-              const SizedBox(height: 18),
-              if (wide)
-                SizedBox(
-                  height: 720,
-                  child: Row(
-                    children: [
-                      SizedBox(width: 320, child: _conversationList()),
-                      const SizedBox(width: 14),
-                      Expanded(child: _chatPanel()),
-                      const SizedBox(width: 14),
-                      SizedBox(width: 300, child: _contextPanel()),
-                    ],
-                  ),
-                )
-              else ...[
-                SizedBox(height: 500, child: _conversationList()),
-                const SizedBox(height: 14),
-                SizedBox(height: 650, child: _chatPanel()),
-                const SizedBox(height: 14),
-                SizedBox(height: 620, child: _contextPanel()),
-              ],
-            ],
-          );
-        },
+  _Conversation copyWith({int? unread}) => _Conversation(
+        title: title,
+        preview: preview,
+        scope: scope,
+        members: members,
+        unread: unread ?? this.unread,
+        type: type,
       );
+}
 
-  Widget _conversationList() {
-    final items = visibleConversations;
-    return SectionCard(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Text('Chats',
-                      style:
-                          TextStyle(fontSize: 19, fontWeight: FontWeight.w900)),
-                ),
-                IconButton(
-                  tooltip: 'New conversation',
-                  onPressed: _newConversation,
-                  icon: const Icon(Icons.edit_square),
-                ),
-              ],
-            ),
-          ),
-          TextField(
-            controller: searchController,
-            onChanged: (value) => setState(() => searchQuery = value),
-            decoration: InputDecoration(
-              hintText: 'Search conversations',
-              prefixIcon: const Icon(Icons.search),
-              suffixIcon: searchQuery.isEmpty
-                  ? null
-                  : IconButton(
-                      onPressed: () {
-                        searchController.clear();
-                        setState(() => searchQuery = '');
-                      },
-                      icon: const Icon(Icons.close_rounded),
-                    ),
-              filled: true,
-              fillColor: const Color(0xFFF4F7F4),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: ['All', 'Unread', 'Groups', 'Incidents', 'Direct']
-                .map((label) => ChoiceChip(
-                      label: Text(label),
-                      selected: activeFilter == label,
-                      onSelected: (_) => setState(() => activeFilter = label),
-                      selectedColor: pdpGreen.withValues(alpha: .12),
-                      side: BorderSide(
-                          color: activeFilter == label
-                              ? pdpGreen
-                              : const Color(0xFFDCE5DE)),
-                    ))
-                .toList(),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: items.isEmpty
-                ? const Center(
-                    child: Text('No conversations match this filter.',
-                        style: TextStyle(color: muted)))
-                : ListView.builder(
-                    itemCount: items.length,
-                    itemBuilder: (context, listIndex) {
-                      final entry = items[listIndex];
-                      final index = entry.key;
-                      final item = entry.value;
-                      final active = selectedConversation == index;
-                      return ListTile(
-                        selected: active,
-                        selectedTileColor: const Color(0xFFE8F4EB),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14)),
-                        onTap: () => _selectConversation(index),
-                        leading: CircleAvatar(
-                          backgroundColor: active
-                              ? pdpGreen.withValues(alpha: .12)
-                              : const Color(0xFFF0F3F0),
-                          child: Icon(
-                            item.type == _ConversationType.incident
-                                ? Icons.warning_amber_rounded
-                                : item.type == _ConversationType.direct
-                                    ? Icons.person_outline_rounded
-                                    : Icons.groups_2,
-                            color: item.type == _ConversationType.incident
-                                ? pdpRed
-                                : pdpGreen,
-                          ),
-                        ),
-                        title: Text(item.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.w900)),
-                        subtitle: Text(item.preview,
-                            maxLines: 1, overflow: TextOverflow.ellipsis),
-                        trailing: item.unread == 0
-                            ? null
-                            : CircleAvatar(
-                                radius: 11,
-                                backgroundColor: pdpGreen,
-                                child: Text('${item.unread}',
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w900)),
-                              ),
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
+class _Message {
+  const _Message({
+    required this.sender,
+    required this.text,
+    required this.time,
+    this.mine = false,
+    this.attachment,
+  });
 
-  Widget _chatPanel() {
-    final channel = currentConversation;
-    return SectionCard(
-      padding: EdgeInsets.zero,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(18, 14, 10, 14),
-            decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Color(0xFFE7ECE8))),
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: channel.type == _ConversationType.incident
-                      ? const Color(0xFFFFECEE)
-                      : const Color(0xFFE7F3E9),
-                  child: Icon(
-                    channel.type == _ConversationType.incident
-                        ? Icons.warning_amber_rounded
-                        : channel.type == _ConversationType.direct
-                            ? Icons.person_outline_rounded
-                            : Icons.groups_2,
-                    color: channel.type == _ConversationType.incident
-                        ? pdpRed
-                        : pdpGreen,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(channel.title,
-                          style: const TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.w900)),
-                      Text('${channel.members} authorized members • ${channel.scope}',
-                          style:
-                              const TextStyle(color: muted, fontSize: 12)),
-                    ],
-                  ),
-                ),
-                IconButton(
-                    tooltip: 'Voice call entry point',
-                    onPressed: () => _showSnack(
-                        'Voice calling will open an authorized secure session'),
-                    icon: const Icon(Icons.call_outlined)),
-                IconButton(
-                    tooltip: 'Video meeting entry point',
-                    onPressed: () => _showSnack(
-                        'Video meeting will require explicit participant consent'),
-                    icon: const Icon(Icons.videocam_outlined)),
-                PopupMenuButton<String>(
-                  tooltip: 'Channel options',
-                  onSelected: (value) {
-                    if (value == 'incident') _linkIncident();
-                    if (value == 'task') _createTask();
-                    if (value == 'broadcast') _composeBroadcast();
-                  },
-                  itemBuilder: (_) => const [
-                    PopupMenuItem(
-                        value: 'incident', child: Text('Link incident')),
-                    PopupMenuItem(value: 'task', child: Text('Create task')),
-                    PopupMenuItem(
-                        value: 'broadcast', child: Text('Send broadcast')),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          if (channel.linkedIncident != null)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 9),
-              color: const Color(0xFFFFF3E8),
-              child: Row(
-                children: [
-                  const Icon(Icons.link_rounded,
-                      size: 17, color: Color(0xFF9A5A00)),
-                  const SizedBox(width: 8),
-                  Text('Linked incident: ${channel.linkedIncident}',
-                      style: const TextStyle(
-                          color: Color(0xFF7A4800),
-                          fontWeight: FontWeight.w800)),
-                ],
-              ),
-            ),
-          Expanded(
-            child: currentMessages.isEmpty
-                ? const Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.chat_bubble_outline_rounded,
-                            size: 42, color: muted),
-                        SizedBox(height: 10),
-                        Text('No messages yet',
-                            style: TextStyle(fontWeight: FontWeight.w900)),
-                        Text('Start this operational conversation.',
-                            style: TextStyle(color: muted)),
-                      ],
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(18),
-                    itemCount: currentMessages.length,
-                    itemBuilder: (context, index) {
-                      final m = currentMessages[index];
-                      return _MessageBubble(message: m);
-                    },
-                  ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Color(0xFFE7ECE8))),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                IconButton(
-                    tooltip: 'Attach file',
-                    onPressed: _attachmentMenu,
-                    icon: const Icon(Icons.attach_file)),
-                IconButton(
-                    tooltip: 'Share location',
-                    onPressed: _shareLocation,
-                    icon: const Icon(Icons.location_on_outlined)),
-                Expanded(
-                  child: TextField(
-                    controller: composer,
-                    minLines: 1,
-                    maxLines: 4,
-                    onSubmitted: (_) => _send(),
-                    decoration: InputDecoration(
-                      hintText: 'Message ${channel.title}',
-                      filled: true,
-                      fillColor: const Color(0xFFF4F7F4),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton.filled(
-                  style: IconButton.styleFrom(backgroundColor: pdpGreen),
-                  onPressed: _send,
-                  icon: const Icon(Icons.send_rounded),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _contextPanel() {
-    final channel = currentConversation;
-    return SectionCard(
-      child: ListView(
-        children: [
-          const Text('Channel controls',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-          const SizedBox(height: 8),
-          Text(channel.title,
-              style: const TextStyle(fontWeight: FontWeight.w900)),
-          Text(channel.scope, style: const TextStyle(color: muted)),
-          const SizedBox(height: 12),
-          _ActionTile(Icons.campaign_outlined, 'Broadcast message',
-              'Send an authorized notice to selected operational groups.',
-              onTap: _composeBroadcast),
-          _ActionTile(Icons.warning_amber_rounded, 'Link incident',
-              channel.linkedIncident == null
-                  ? 'Attach this conversation to an incident or escalation record.'
-                  : 'Currently linked to ${channel.linkedIncident}.',
-              onTap: _linkIncident),
-          _ActionTile(Icons.assignment_outlined, 'Create task',
-              'Convert this conversation into an assigned operational action.',
-              onTap: _createTask),
-          _ActionTile(Icons.location_on_outlined, 'Share location',
-              'Explicitly share operational location with authorized members.',
-              onTap: _shareLocation),
-          _ActionTile(Icons.folder_outlined, 'Shared files',
-              'Photos, documents, audio and campaign materials in this channel.',
-              onTap: () => _showSnack('Shared-files repository opens here')),
-          const Divider(height: 30),
-          const Text('Operational integrations',
-              style: TextStyle(fontWeight: FontWeight.w900)),
-          const SizedBox(height: 10),
-          const _IntegrationRow(
-              Icons.warning_amber_rounded, 'Situation Room incidents'),
-          const _IntegrationRow(Icons.task_alt_rounded, 'Task management'),
-          const _IntegrationRow(Icons.inventory_2_outlined, 'Logistics records'),
-          const _IntegrationRow(Icons.feed_outlined, 'Field reports'),
-          const _IntegrationRow(Icons.description_outlined, 'Documents'),
-          const Divider(height: 30),
-          const Text('Communication policy',
-              style: TextStyle(fontWeight: FontWeight.w900)),
-          const SizedBox(height: 8),
-          const Text(
-            'Messaging is for internal campaign operations. Access is role-based, critical actions are auditable, location sharing is explicit, and no hidden camera or microphone activation is permitted.',
-            style: TextStyle(color: muted, height: 1.45),
-          ),
-          const SizedBox(height: 14),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: const [
-              StatusPill('ROLE-BASED ACCESS'),
-              StatusPill('AUDITABLE', color: Color(0xFF6555B8)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  final String sender;
+  final String text;
+  final String time;
+  final bool mine;
+  final String? attachment;
 }
 
 class _MessageBubble extends StatelessWidget {
@@ -963,235 +660,61 @@ class _MessageBubble extends StatelessWidget {
   Widget build(BuildContext context) => Align(
         alignment: message.mine ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 520),
-          margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.all(13),
+          constraints: const BoxConstraints(maxWidth: 610),
+          margin: const EdgeInsets.only(bottom: 10),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: message.mine
-                ? const Color(0xFFDFF2E4)
-                : const Color(0xFFF2F5F2),
-            borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(16),
-              topRight: const Radius.circular(16),
-              bottomLeft: Radius.circular(message.mine ? 16 : 4),
-              bottomRight: Radius.circular(message.mine ? 4 : 16),
-            ),
+            color: message.mine ? const Color(0xFFE3F3E8) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE2E8E3)),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!message.mine)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(message.sender,
-                      style: const TextStyle(
-                          color: pdpGreenDark,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 12)),
-                ),
-              Text(message.text,
-                  style: const TextStyle(color: ink, height: 1.35)),
-              if (message.attachmentLabel != null) ...[
-                const SizedBox(height: 9),
-                _InlineCard(
-                  icon: Icons.description_outlined,
-                  label: message.attachmentLabel!,
-                ),
-              ],
-              if (message.locationLabel != null) ...[
-                const SizedBox(height: 9),
-                _InlineCard(
-                  icon: Icons.location_on_outlined,
-                  label: message.locationLabel!,
-                ),
-              ],
-              if (message.incidentId != null) ...[
-                const SizedBox(height: 7),
-                Text('Linked: ${message.incidentId}',
-                    style: const TextStyle(
-                        color: Color(0xFF9A5A00),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w800)),
-              ],
-              const SizedBox(height: 6),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(message.time,
-                      style: const TextStyle(color: muted, fontSize: 10)),
-                  const SizedBox(width: 8),
-                  Text(message.status,
-                      style: const TextStyle(color: muted, fontSize: 10)),
-                ],
-              )
-            ],
-          ),
-        ),
-      );
-}
-
-class _InlineCard extends StatelessWidget {
-  const _InlineCard({required this.icon, required this.label});
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(9),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: .72),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: const Color(0xFFDCE5DE)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 17, color: pdpGreen),
-            const SizedBox(width: 7),
-            Flexible(
-              child: Text(label,
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            if (!message.mine) ...[
+              Text(message.sender,
                   style: const TextStyle(
-                      fontWeight: FontWeight.w800, fontSize: 12)),
-            ),
-          ],
-        ),
-      );
-}
-
-class _CommunicationsNotice extends StatelessWidget {
-  const _CommunicationsNotice();
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: const Color(0xFFEAF4ED),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: const Color(0xFFD5E7DA)),
-        ),
-        child: const Row(
-          children: [
-            Icon(Icons.lock_outline_rounded, color: pdpGreen),
-            SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'Prototype communication layer: direct messages, team channels, broadcasts, attachments, incident threads, tasks, delivery/read state and secure-call entry points. Production encryption and calling require audited backend/native services.',
-                style: TextStyle(fontWeight: FontWeight.w600, color: ink),
+                      color: pdpGreenDark,
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.w900)),
+              const SizedBox(height: 4),
+            ],
+            Text(message.text,
+                style: const TextStyle(color: ink, height: 1.4, fontSize: 12)),
+            if (message.attachment != null) ...[
+              const SizedBox(height: 9),
+              Container(
+                padding: const EdgeInsets.all(9),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: .75),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.attach_file_rounded, size: 16, color: pdpGreen),
+                  const SizedBox(width: 6),
+                  Text(message.attachment!,
+                      style: const TextStyle(
+                          color: ink, fontSize: 10.5, fontWeight: FontWeight.w700)),
+                ]),
               ),
+            ],
+            const SizedBox(height: 5),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(message.time,
+                  style: const TextStyle(color: muted, fontSize: 9)),
             ),
-          ],
+          ]),
         ),
       );
 }
 
-enum _ConversationType { group, incident, direct }
+IconData _conversationIcon(_ConversationType type) => switch (type) {
+      _ConversationType.group => Icons.groups_2_outlined,
+      _ConversationType.incident => Icons.radar_rounded,
+      _ConversationType.direct => Icons.person_outline_rounded,
+    };
 
-class _Conversation {
-  const _Conversation({
-    required this.title,
-    required this.preview,
-    required this.unread,
-    required this.type,
-    required this.members,
-    required this.scope,
-    this.linkedIncident,
-  });
-
-  final String title;
-  final String preview;
-  final int unread;
-  final _ConversationType type;
-  final int members;
-  final String scope;
-  final String? linkedIncident;
-
-  _Conversation copyWith({int? unread, String? linkedIncident}) => _Conversation(
-        title: title,
-        preview: preview,
-        unread: unread ?? this.unread,
-        type: type,
-        members: members,
-        scope: scope,
-        linkedIncident: linkedIncident ?? this.linkedIncident,
-      );
-}
-
-class _Message {
-  const _Message({
-    required this.sender,
-    required this.text,
-    required this.time,
-    required this.mine,
-    required this.status,
-    this.attachmentLabel,
-    this.locationLabel,
-    this.incidentId,
-  });
-
-  final String sender;
-  final String text;
-  final String time;
-  final bool mine;
-  final String status;
-  final String? attachmentLabel;
-  final String? locationLabel;
-  final String? incidentId;
-}
-
-class _ActionTile extends StatelessWidget {
-  const _ActionTile(this.icon, this.title, this.detail, {required this.onTap});
-  final IconData icon;
-  final String title;
-  final String detail;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: CircleAvatar(
-          backgroundColor: const Color(0xFFEAF4ED),
-          child: Icon(icon, color: pdpGreen),
-        ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
-        subtitle: Text(detail),
-        onTap: onTap,
-      );
-}
-
-class _IntegrationRow extends StatelessWidget {
-  const _IntegrationRow(this.icon, this.label);
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: pdpGreen),
-            const SizedBox(width: 9),
-            Expanded(
-              child: Text(label,
-                  style: const TextStyle(fontWeight: FontWeight.w700)),
-            ),
-          ],
-        ),
-      );
-}
-
-class _AttachmentOption extends StatelessWidget {
-  const _AttachmentOption(this.icon, this.label, this.onTap);
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => ListTile(
-        leading: CircleAvatar(
-          backgroundColor: const Color(0xFFEAF4ED),
-          child: Icon(icon, color: pdpGreen),
-        ),
-        title: Text(label, style: const TextStyle(fontWeight: FontWeight.w800)),
-        onTap: onTap,
-      );
-}
+Color _conversationColor(_ConversationType type) => switch (type) {
+      _ConversationType.group => pdpGreen,
+      _ConversationType.incident => pdpRed,
+      _ConversationType.direct => const Color(0xFF2563EB),
+    };
