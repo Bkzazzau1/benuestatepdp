@@ -665,7 +665,7 @@ class _BaseRecordTile extends StatelessWidget {
         ),
         child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           CircleAvatar(
-            backgroundColor: iconColor.withOpacity(.10),
+            backgroundColor: iconColor.withValues(alpha: .10),
             child: Icon(icon, color: iconColor, size: 20),
           ),
           const SizedBox(width: 12),

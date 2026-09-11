@@ -8,7 +8,6 @@ import 'domain/records_store.dart';
 import 'executive_dashboard.dart';
 import 'login_page.dart';
 import 'operations_pages.dart';
-import 'pages.dart';
 import 'record_pages.dart';
 import 'records_governance.dart';
 import 'scoped_communications.dart';
@@ -455,7 +454,7 @@ class _Brand extends StatelessWidget {
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: pdpGreen.withOpacity(.16),
+                  color: pdpGreen.withValues(alpha: .16),
                   blurRadius: 14,
                   offset: const Offset(0, 5),
                 ),

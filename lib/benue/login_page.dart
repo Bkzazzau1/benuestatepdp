@@ -76,7 +76,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF0B7A3B).withOpacity(.18),
+              color: const Color(0xFF0B7A3B).withValues(alpha: .18),
               blurRadius: 40,
               offset: const Offset(0, 18),
             ),
@@ -92,7 +92,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                 height: 280,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(.05),
+                  color: Colors.white.withValues(alpha: .05),
                 ),
               ),
             ),
@@ -104,7 +104,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                 height: 340,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: pdpRed.withOpacity(.12),
+                  color: pdpRed.withValues(alpha: .12),
                 ),
               ),
             ),
@@ -165,7 +165,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(.12),
+                                color: Colors.white.withValues(alpha: .12),
                                 borderRadius: BorderRadius.circular(999),
                                 border: Border.all(color: Colors.white24),
                               ),
@@ -404,7 +404,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                     boxShadow: active
                         ? [
                             BoxShadow(
-                              color: pdpGreen.withOpacity(.10),
+                              color: pdpGreen.withValues(alpha: .10),
                               blurRadius: 16,
                               offset: const Offset(0, 6),
                             )
@@ -480,7 +480,7 @@ class _CampaignStat extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(.10),
+          color: Colors.white.withValues(alpha: .10),
           borderRadius: BorderRadius.circular(13),
           border: Border.all(color: Colors.white12),
         ),

@@ -184,7 +184,7 @@ class CommandActionsBar extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<IncidentSeverity>(
-                    value: severity,
+                    initialValue: severity,
                     decoration: const InputDecoration(labelText: 'Severity'),
                     items: IncidentSeverity.values
                         .map((item) => DropdownMenuItem(
@@ -222,7 +222,7 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
 
-    if (save == true && title.text.trim().isNotEmpty && category.text.trim().isNotEmpty) {
+    if (context.mounted && save == true && title.text.trim().isNotEmpty && category.text.trim().isNotEmpty) {
       final records = _records(context);
       final activeScope = _scope(context);
       final id = records.nextId('INC', lgaId: activeScope.lgaId);
@@ -285,7 +285,7 @@ class CommandActionsBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
-                  value: ownerId,
+                  initialValue: ownerId,
                   decoration: const InputDecoration(labelText: 'Owner'),
                   items: users
                       .map((user) => DropdownMenuItem(
@@ -299,7 +299,7 @@ class CommandActionsBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<IncidentSeverity>(
-                  value: priority,
+                  initialValue: priority,
                   decoration: const InputDecoration(labelText: 'Priority'),
                   items: IncidentSeverity.values
                       .map((item) => DropdownMenuItem(
@@ -313,7 +313,7 @@ class CommandActionsBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String?>(
-                  value: incidentId,
+                  initialValue: incidentId,
                   decoration: const InputDecoration(labelText: 'Linked incident (optional)'),
                   items: [
                     const DropdownMenuItem<String?>(
@@ -344,7 +344,7 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
 
-    if (save == true && title.text.trim().isNotEmpty) {
+    if (context.mounted && save == true && title.text.trim().isNotEmpty) {
       final activeScope = _scope(context);
       final id = records.nextId('TSK', lgaId: activeScope.lgaId);
       records.addTask(
@@ -401,7 +401,7 @@ class CommandActionsBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String?>(
-                  value: incidentId,
+                  initialValue: incidentId,
                   decoration: const InputDecoration(labelText: 'Link to incident (optional)'),
                   items: [
                     const DropdownMenuItem<String?>(value: null, child: Text('No incident link')),
@@ -429,7 +429,7 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
 
-    if (save == true && summary.text.trim().isNotEmpty && category.text.trim().isNotEmpty) {
+    if (context.mounted && save == true && summary.text.trim().isNotEmpty && category.text.trim().isNotEmpty) {
       final activeScope = _scope(context);
       final id = records.nextId('RPT', lgaId: activeScope.lgaId);
       records.addFieldReport(
@@ -502,7 +502,7 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
 
-    if (save == true && title.text.trim().isNotEmpty) {
+    if (context.mounted && save == true && title.text.trim().isNotEmpty) {
       final records = _records(context);
       final activeScope = _scope(context);
       final id = records.nextId('ACT', lgaId: activeScope.lgaId);
@@ -562,7 +562,7 @@ class CommandActionsBar extends StatelessWidget {
                 if (users.isNotEmpty) ...[
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String?>(
-                    value: custodianId,
+                    initialValue: custodianId,
                     decoration: const InputDecoration(labelText: 'Custodian'),
                     items: users
                         .map((user) => DropdownMenuItem<String?>(
@@ -595,7 +595,7 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
 
-    if (save == true && name.text.trim().isNotEmpty && category.text.trim().isNotEmpty) {
+    if (context.mounted && save == true && name.text.trim().isNotEmpty && category.text.trim().isNotEmpty) {
       final activeScope = _scope(context);
       final id = records.nextId('AST', lgaId: activeScope.lgaId);
       records.addAsset(
@@ -650,7 +650,7 @@ class CommandActionsBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<CampaignRole>(
-                  value: role,
+                  initialValue: role,
                   decoration: const InputDecoration(labelText: 'Role'),
                   items: roles
                       .map((item) => DropdownMenuItem(
@@ -684,7 +684,7 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
 
-    if (save == true && name.text.trim().isNotEmpty) {
+    if (context.mounted && save == true && name.text.trim().isNotEmpty) {
       final records = _records(context);
       final activeScope = _scope(context);
       final userId = records.nextId('USR', lgaId: activeScope.lgaId);
@@ -836,7 +836,7 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
 
-    if (save == true) {
+    if (context.mounted && save == true) {
       records.setReadiness(
         scope: _scope(context),
         agentCoveragePercent: coverage,
@@ -912,7 +912,7 @@ class CommandActionsBar extends StatelessWidget {
                   _scopeNotice(context),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: entityType,
+                    initialValue: entityType,
                     decoration: const InputDecoration(labelText: 'Record type'),
                     items: const ['Incident', 'Task', 'Activity', 'Asset']
                         .map((item) => DropdownMenuItem(value: item, child: Text(item)))
@@ -929,7 +929,7 @@ class CommandActionsBar extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: available.any((e) => e.id == entityId) ? entityId : null,
+                    initialValue: available.any((e) => e.id == entityId) ? entityId : null,
                     decoration: const InputDecoration(labelText: 'Record'),
                     items: available
                         .map((item) => DropdownMenuItem(
@@ -941,7 +941,7 @@ class CommandActionsBar extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    value: statusOptions.contains(targetStatus) ? targetStatus : null,
+                    initialValue: statusOptions.contains(targetStatus) ? targetStatus : null,
                     decoration: const InputDecoration(labelText: 'New status'),
                     items: statusOptions
                         .map((item) => DropdownMenuItem(value: item, child: Text(_labelName(item))))
@@ -968,7 +968,7 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
 
-    if (save == true && entityId != null && targetStatus != null) {
+    if (context.mounted && save == true && entityId != null && targetStatus != null) {
       switch (entityType) {
         case 'Task':
           records.updateTaskStatus(
