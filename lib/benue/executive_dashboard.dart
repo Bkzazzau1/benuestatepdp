@@ -449,7 +449,7 @@ class _KpiGrid extends StatelessWidget {
         footnote: '${summary.openIncidents} incidents open',
         icon: Icons.notification_important_outlined,
         accent: const Color(0xFFD97706),
-        progress: math.min(1, critical / 8),
+        progress: math.min(1.0, critical / 8),
       ),
       _ExecutiveKpi(
         label: 'Operational tasks',
@@ -457,7 +457,7 @@ class _KpiGrid extends StatelessWidget {
         footnote: '${summary.readyAssets}/${summary.assets} assets ready',
         icon: Icons.task_alt_rounded,
         accent: const Color(0xFF7C3AED),
-        progress: summary.assets == 0 ? 0 : summary.readyAssets / summary.assets,
+        progress: summary.assets == 0 ? 0.0 : summary.readyAssets / summary.assets,
       ),
     ];
     return LayoutBuilder(
@@ -534,7 +534,7 @@ class _ExecutiveKpi extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(99),
               child: LinearProgressIndicator(
-                value: progress.clamp(0, 1),
+                value: progress.clamp(0.0, 1.0).toDouble(),
                 minHeight: 6,
                 backgroundColor: const Color(0xFFEDF1EE),
                 valueColor: AlwaysStoppedAnimation<Color>(accent),
