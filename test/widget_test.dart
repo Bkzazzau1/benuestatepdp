@@ -29,7 +29,7 @@ void main() {
     expect(find.textContaining('Zaria'), findsNothing);
   });
 
-  testWidgets('opens dedicated historical election analytics', (tester) async {
+  testWidgets('opens premium INEC historical election archive', (tester) async {
     tester.view.physicalSize = const Size(1600, 1100);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -39,11 +39,23 @@ void main() {
     await tester.tap(find.text('Historical Elections').first);
     await tester.pumpAndSettle();
 
-    expect(find.text('Historical Elections'), findsWidgets);
-    expect(find.text('+120,595'), findsOneWidget);
-    expect(find.text('−210,560'), findsOneWidget);
-    expect(find.textContaining('APC + PDP only'), findsWidgets);
-    for (final heading in ['What the history shows', 'Data still required']) {
+    expect(find.text('Historical Election Intelligence'), findsOneWidget);
+    expect(find.text('INEC ELECTION ARCHIVE'), findsOneWidget);
+    expect(find.text('2023 election snapshot'), findsOneWidget);
+    expect(find.text('2,777,727'), findsWidgets);
+    expect(find.text('250,020'), findsOneWidget);
+
+    await tester.tap(find.text('2019').first);
+    await tester.pumpAndSettle();
+    expect(find.text('2019 election snapshot'), findsOneWidget);
+    expect(find.text('434,473'), findsWidgets);
+    expect(find.text('345,155'), findsWidgets);
+
+    for (final heading in [
+      '2019 candidate result archive',
+      'What changed across the three cycles?',
+      'INEC source registry',
+    ]) {
       await tester.scrollUntilVisible(
         find.text(heading),
         350,
