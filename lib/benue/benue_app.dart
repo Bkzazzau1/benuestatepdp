@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_scope.dart';
+import 'command_actions.dart';
 import 'domain/records_store.dart';
 import 'operations_pages.dart';
 import 'pages.dart';
@@ -116,6 +117,7 @@ class _CampaignShellState extends State<CampaignShell> {
   Widget _content() => Column(
         children: [
           ActiveScopeBar(onOpenMap: () => choose(1)),
+          CommandActionsBar(onOpenMap: () => choose(1)),
           Expanded(child: IndexedStack(index: selected, children: pages)),
         ],
       );
