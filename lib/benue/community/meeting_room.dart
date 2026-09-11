@@ -37,8 +37,7 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
     final community = CampaignCommunity.of(context);
     final records = CampaignRecords.of(context);
     final session = CampaignSession.of(context);
-    final campaignScope = CampaignScope.of(context);
-    final scope = geographicScopeFromCampaignScope(campaignScope);
+    final scope = geographicScopeFromCampaignScope(CampaignScope.of(context));
     final actorId = communityActorId(session.role!, scope);
     final rank = coordinationRankForRole(session.role!);
     final groups = community.groups
@@ -55,17 +54,16 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
       actorScope: scope,
       actorId: actorId,
       groups: groups,
-      community: community,
     );
     _selectedUserIds.removeWhere((id) => !eligible.any((user) => user.id == id));
 
     return ColoredBox(
-      color: const Color(0xFFF2F5F3),
+      color: const Color(0xFFF3F6F3),
       child: ListView(
         padding: const EdgeInsets.fromLTRB(24, 22, 24, 38),
         children: [
           _MeetingHero(
-            operatorName: session.operatorName,
+            name: session.operatorName,
             role: roleLabel(session.role!),
             rank: coordinationRankLabel(rank),
             scope: scope.label,
@@ -104,7 +102,7 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
                 eligibleUsers: eligible,
               ),
             );
-            final rankPanel = _RankAndDelegationPanel(
+            final access = _MeetingAccessCard(
               role: session.role!,
               rank: rank,
               scope: scope,
@@ -113,13 +111,13 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
               return Column(children: [
                 create,
                 const SizedBox(height: 14),
-                rankPanel,
+                access,
               ]);
             }
             return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Expanded(flex: 14, child: create),
               const SizedBox(width: 14),
-              Expanded(flex: 8, child: rankPanel),
+              Expanded(flex: 8, child: access),
             ]);
           }),
           const SizedBox(height: 16),
@@ -130,8 +128,6 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
             onComplete: (id) =>
                 community.setMeetingStatus(id, MeetingStatus.completed),
           ),
-          const SizedBox(height: 16),
-          const _MeetingPolicyCard(),
         ],
       ),
     );
@@ -143,13 +139,18 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
     required GeographicScope actorScope,
     required String actorId,
     required List<CampaignGroup> groups,
-    required CampaignCommunityController community,
   }) {
     if (_audienceMode == MeetingAudienceMode.group) {
-      final group = groups.where((g) => g.id == _groupId).firstOrNull;
-      if (group == null) return const [];
+      CampaignGroup? selected;
+      for (final group in groups) {
+        if (group.id == _groupId) {
+          selected = group;
+          break;
+        }
+      }
+      if (selected == null) return const [];
       return records.users
-          .where((user) => group.memberIds.contains(user.id) && user.id != actorId)
+          .where((user) => selected!.memberIds.contains(user.id) && user.id != actorId)
           .toList(growable: false);
     }
 
@@ -201,7 +202,7 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
   }) {
     if (_title.text.trim().isEmpty || _selectedUserIds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Add a meeting title and at least one eligible participant.')),
+        const SnackBar(content: Text('Add a meeting title and select participants.')),
       );
       return;
     }
@@ -210,7 +211,7 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
         .toList(growable: false);
     if (selected.length != _selectedUserIds.length) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('One or more selected participants are outside your permitted audience.')),
+        const SnackBar(content: Text('Please review the selected participants.')),
       );
       return;
     }
@@ -222,60 +223,55 @@ class _MeetingRoomPageState extends State<MeetingRoomPage> {
       organizerRole: session.role!,
       organizerScope: scope,
       audienceMode: _audienceMode,
-      participantIds: selected.map((u) => u.id).toList(growable: false),
-      participantNames:
-          selected.map((u) => u.displayName).toList(growable: false),
+      participantIds: selected.map((e) => e.id).toList(growable: false),
+      participantNames: selected.map((e) => e.displayName).toList(growable: false),
       startsAt: _startsAt,
       durationMinutes: _durationMinutes,
       groupId: _audienceMode == MeetingAudienceMode.group ? _groupId : null,
     );
     _title.clear();
     _agenda.clear();
-    setState(() {
-      _selectedUserIds.clear();
-      _startsAt = DateTime.now().add(const Duration(hours: 1));
-    });
-  }
-}
-
-extension _FirstOrNull<T> on Iterable<T> {
-  T? get firstOrNull {
-    final iterator = this.iterator;
-    return iterator.moveNext() ? iterator.current : null;
+    setState(() => _selectedUserIds.clear());
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Meeting created.')),
+    );
   }
 }
 
 class _MeetingHero extends StatelessWidget {
   const _MeetingHero({
-    required this.operatorName,
+    required this.name,
     required this.role,
     required this.rank,
     required this.scope,
   });
 
-  final String operatorName;
+  final String name;
   final String role;
   final String rank;
   final String scope;
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(26),
+        padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
           gradient: const LinearGradient(
-            colors: [Color(0xFF081B24), Color(0xFF0D4D5B), Color(0xFF0E7490)],
+            colors: [Color(0xFF071C13), Color(0xFF0A6036), Color(0xFF0D7A45)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
+          boxShadow: const [
+            BoxShadow(color: Color(0x1A064F2A), blurRadius: 30, offset: Offset(0, 12)),
+          ],
         ),
         child: LayoutBuilder(builder: (context, c) {
-          final compact = c.maxWidth < 830;
+          final compact = c.maxWidth < 820;
           final copy = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const Wrap(spacing: 8, runSpacing: 8, children: [
               _MeetingBadge(Icons.video_call_rounded, 'MEETING ROOM'),
-              _MeetingBadge(Icons.rule_folder_outlined, 'SCOPE-CONTROLLED'),
-              _MeetingBadge(Icons.groups_2_outlined, 'GROUP-AWARE'),
+              _MeetingBadge(Icons.groups_2_outlined, 'TEAMS & GROUPS'),
+              _MeetingBadge(Icons.location_on_outlined, 'LOCATION AWARE'),
             ]),
             const SizedBox(height: 18),
             Text('Campaign Meeting Room',
@@ -288,9 +284,11 @@ class _MeetingHero extends StatelessWidget {
                 )),
             const SizedBox(height: 9),
             const Text(
-              'Any authenticated account may convene a meeting, but participant selection is limited to the organizer’s assignment chain, permitted location or an explicit group.',
+              'Bring the right people together for campaign coordination, reviews and urgent decisions.',
               style: TextStyle(
-                  color: Colors.white70, height: 1.5, fontWeight: FontWeight.w600),
+                  color: Colors.white70,
+                  height: 1.5,
+                  fontWeight: FontWeight.w600),
             ),
           ]);
           final identity = Container(
@@ -301,15 +299,21 @@ class _MeetingHero extends StatelessWidget {
               border: Border.all(color: Colors.white.withValues(alpha: .13)),
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(operatorName,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900)),
+              Text(name,
+                  style: const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w900)),
               const SizedBox(height: 3),
               Text(role,
-                  style: const TextStyle(color: Colors.white60, fontSize: 10)),
+                  style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700)),
               const SizedBox(height: 12),
               Text(rank,
                   style: const TextStyle(
-                      color: Colors.white, fontSize: 16, fontWeight: FontWeight.w900)),
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900)),
               const SizedBox(height: 2),
               Text(scope,
                   style: const TextStyle(color: Colors.white60, fontSize: 10)),
@@ -396,53 +400,48 @@ class _CreateMeetingPanel extends StatelessWidget {
   Widget build(BuildContext context) => SectionCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text('Call a meeting',
-              style: TextStyle(color: ink, fontSize: 18, fontWeight: FontWeight.w900)),
+              style: TextStyle(color: ink, fontSize: 17, fontWeight: FontWeight.w900)),
           const SizedBox(height: 4),
-          const Text(
-            'Participant choices are generated from your permitted audience. There is no unrestricted user search.',
-            style: TextStyle(color: muted, fontSize: 10.5, height: 1.4),
-          ),
-          const SizedBox(height: 15),
+          const Text('Choose the audience, time and participants.',
+              style: TextStyle(color: muted, fontSize: 10.5)),
+          const SizedBox(height: 16),
           TextField(
             controller: titleController,
-            decoration: const InputDecoration(labelText: 'Meeting title'),
+            decoration: const InputDecoration(
+              labelText: 'Meeting title',
+              hintText: 'Example: LGA coordination review',
+            ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           TextField(
             controller: agendaController,
             minLines: 2,
             maxLines: 5,
-            decoration: const InputDecoration(labelText: 'Agenda / purpose'),
+            decoration: const InputDecoration(
+              labelText: 'Agenda',
+              hintText: 'What should the meeting cover?',
+            ),
           ),
           const SizedBox(height: 14),
-          const Text('Audience rule',
+          const Text('Invite from',
               style: TextStyle(color: ink, fontWeight: FontWeight.w900)),
           const SizedBox(height: 8),
-          Wrap(spacing: 8, runSpacing: 8, children: [
-            _AudienceChip(
-              label: 'My assignments',
-              icon: Icons.account_tree_outlined,
-              selected: audienceMode == MeetingAudienceMode.assignments,
-              onTap: () => onAudienceModeChanged(MeetingAudienceMode.assignments),
-            ),
-            _AudienceChip(
-              label: 'My location',
-              icon: Icons.location_on_outlined,
-              selected: audienceMode == MeetingAudienceMode.location,
-              onTap: () => onAudienceModeChanged(MeetingAudienceMode.location),
-            ),
-            _AudienceChip(
-              label: 'Group',
-              icon: Icons.groups_2_outlined,
-              selected: audienceMode == MeetingAudienceMode.group,
-              onTap: () => onAudienceModeChanged(MeetingAudienceMode.group),
-            ),
-          ]),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: MeetingAudienceMode.values.map((mode) {
+              return ChoiceChip(
+                label: Text(_audienceLabel(mode)),
+                selected: audienceMode == mode,
+                onSelected: (_) => onAudienceModeChanged(mode),
+              );
+            }).toList(),
+          ),
           if (audienceMode == MeetingAudienceMode.group) ...[
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
               value: selectedGroupId,
-              decoration: const InputDecoration(labelText: 'My campaign group'),
+              decoration: const InputDecoration(labelText: 'Select group'),
               items: groups
                   .map((group) => DropdownMenuItem(
                         value: group.id,
@@ -451,126 +450,92 @@ class _CreateMeetingPanel extends StatelessWidget {
                   .toList(),
               onChanged: onGroupChanged,
             ),
-            if (groups.isEmpty) ...[
-              const SizedBox(height: 8),
-              const Text(
-                'No explicit campaign group is assigned to this account yet.',
-                style: TextStyle(color: muted, fontSize: 10),
-              ),
-            ],
           ],
           const SizedBox(height: 14),
           Row(children: [
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: onPickTime,
-                icon: const Icon(Icons.event_rounded),
+                icon: const Icon(Icons.calendar_month_outlined),
                 label: Text(_formatDateTime(startsAt)),
               ),
             ),
             const SizedBox(width: 10),
-            SizedBox(
-              width: 160,
-              child: DropdownButtonFormField<int>(
-                value: durationMinutes,
-                decoration: const InputDecoration(labelText: 'Duration'),
-                items: const [30, 45, 60, 90, 120]
-                    .map((minutes) => DropdownMenuItem(
-                          value: minutes,
-                          child: Text('$minutes min'),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) onDurationChanged(value);
-                },
-              ),
+            DropdownButton<int>(
+              value: durationMinutes,
+              items: const [30, 45, 60, 90, 120]
+                  .map((minutes) => DropdownMenuItem(
+                        value: minutes,
+                        child: Text('${minutes}m'),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) onDurationChanged(value);
+              },
             ),
           ]),
-          const SizedBox(height: 14),
+          const SizedBox(height: 16),
           Row(children: [
             const Expanded(
-              child: Text('Eligible participants',
+              child: Text('Participants',
                   style: TextStyle(color: ink, fontWeight: FontWeight.w900)),
             ),
-            StatusPill('${eligibleUsers.length} ELIGIBLE', color: const Color(0xFF0E7490)),
+            Text('${selectedUserIds.length} selected',
+                style: const TextStyle(color: muted, fontSize: 10.5)),
           ]),
           const SizedBox(height: 8),
           if (eligibleUsers.isEmpty)
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F9F8),
+                color: const Color(0xFFF7F9F7),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: const Color(0xFFE4EAE5)),
               ),
               child: const Text(
-                'No account is eligible under this audience rule. Choose another permitted audience or wait for verified lower-level assignments to be created.',
-                style: TextStyle(color: muted, fontSize: 10.5, height: 1.4),
+                'No members are available in this audience.',
+                style: TextStyle(color: muted),
               ),
             )
           else
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 260),
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: eligibleUsers.length,
-                itemBuilder: (context, index) {
-                  final user = eligibleUsers[index];
-                  return CheckboxListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.zero,
-                    value: selectedUserIds.contains(user.id),
-                    onChanged: (_) => onToggleUser(user.id),
-                    title: Text(user.displayName,
-                        style: const TextStyle(
-                            color: ink, fontSize: 11, fontWeight: FontWeight.w800)),
-                    subtitle: Text(
-                      '${coordinationRankLabel(coordinationRankForRole(user.role))} • ${user.scope.label}',
-                      style: const TextStyle(color: muted, fontSize: 9.5),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: eligibleUsers.map((user) {
+                final selected = selectedUserIds.contains(user.id);
+                return FilterChip(
+                  selected: selected,
+                  avatar: CircleAvatar(
+                    backgroundColor: selected ? pdpGreen : const Color(0xFFE8EEE9),
+                    child: Text(
+                      user.displayName.substring(0, 1).toUpperCase(),
+                      style: TextStyle(
+                        color: selected ? Colors.white : pdpGreen,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                  label: Text(user.displayName),
+                  onSelected: (_) => onToggleUser(user.id),
+                );
+              }).toList(),
             ),
-          const SizedBox(height: 14),
-          FilledButton.icon(
-            onPressed: onCreate,
-            icon: const Icon(Icons.video_call_rounded),
-            label: Text('Create meeting (${selectedUserIds.length})'),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'The prototype schedules and controls the room/audience. Live audio/video transport (WebRTC/SFU) will be connected in the backend phase.',
-            style: TextStyle(color: muted, fontSize: 9.5),
+          const SizedBox(height: 18),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: onCreate,
+              icon: const Icon(Icons.video_call_rounded),
+              label: const Text('Create meeting'),
+            ),
           ),
         ]),
       );
 }
 
-class _AudienceChip extends StatelessWidget {
-  const _AudienceChip({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
-  });
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => ChoiceChip(
-        avatar: Icon(icon, size: 16),
-        label: Text(label),
-        selected: selected,
-        onSelected: (_) => onTap(),
-      );
-}
-
-class _RankAndDelegationPanel extends StatelessWidget {
-  const _RankAndDelegationPanel({
+class _MeetingAccessCard extends StatelessWidget {
+  const _MeetingAccessCard({
     required this.role,
     required this.rank,
     required this.scope,
@@ -585,81 +550,83 @@ class _RankAndDelegationPanel extends StatelessWidget {
     final creatable = creatableCoordinatorRanks(role);
     return SectionCard(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        const Text('Coordination rank & delegation',
+        const Text('Your coordination level',
             style: TextStyle(color: ink, fontSize: 17, fontWeight: FontWeight.w900)),
-        const SizedBox(height: 4),
-        const Text(
-          'Rank controls coordinator creation and the normal geographic meeting boundary.',
-          style: TextStyle(color: muted, fontSize: 10.5, height: 1.4),
-        ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.all(14),
+          width: double.infinity,
+          padding: const EdgeInsets.all(15),
           decoration: BoxDecoration(
-            color: const Color(0xFFEAF4F7),
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(color: const Color(0xFFD4E8ED)),
-          ),
-          child: Row(children: [
-            const CircleAvatar(
-              backgroundColor: Color(0xFFDCECF1),
-              child: Icon(Icons.military_tech_outlined, color: Color(0xFF0E7490)),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFE7F4EB), Color(0xFFF7FAF7)],
             ),
-            const SizedBox(width: 11),
-            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(coordinationRankLabel(rank),
-                  style: const TextStyle(
-                      color: ink, fontSize: 15, fontWeight: FontWeight.w900)),
-              const SizedBox(height: 2),
-              Text(scope.label,
-                  style: const TextStyle(color: muted, fontSize: 10)),
-            ])),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFD9E8DD)),
+          ),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(coordinationRankLabel(rank),
+                style: const TextStyle(
+                    color: pdpGreenDark, fontSize: 18, fontWeight: FontWeight.w900)),
+            const SizedBox(height: 3),
+            Text(scope.label,
+                style: const TextStyle(color: muted, fontSize: 10.5)),
           ]),
         ),
-        const SizedBox(height: 15),
-        const Text('May create / manage',
+        const SizedBox(height: 16),
+        const Text('You can coordinate',
             style: TextStyle(color: ink, fontWeight: FontWeight.w900)),
         const SizedBox(height: 8),
         if (creatable.isEmpty)
-          const Text('No coordinator-creation authority.',
-              style: TextStyle(color: muted, fontSize: 10.5))
+          const Text('Your assigned teams and groups.',
+              style: TextStyle(color: muted, height: 1.4))
         else
-          ...creatable.map((target) => Padding(
+          ...creatable.map((item) => Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Row(children: [
-                  const Icon(Icons.verified_rounded, color: pdpGreen, size: 17),
+                  const Icon(Icons.check_circle_rounded, color: pdpGreen, size: 18),
                   const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(coordinationRankLabel(target),
-                        style: const TextStyle(
-                            color: ink, fontSize: 10.5, fontWeight: FontWeight.w800)),
-                  ),
+                  Text(coordinationRankLabel(item),
+                      style: const TextStyle(color: ink, fontWeight: FontWeight.w700)),
                 ]),
               )),
-        const Divider(height: 24),
-        const _RankRow('State Command', 'Can create State + LGA coordinators'),
-        const _RankRow('State Coordinator', 'Can manage/create LGA coordinators'),
-        const _RankRow('LGA Coordinator', 'Can manage/create Ward coordinators in own LGA'),
-        const _RankRow('Ward Coordinator', 'Can manage/create PU teams in own ward'),
-        const _RankRow('Polling Unit Team', 'No coordinator creation authority'),
+        const SizedBox(height: 12),
+        const Divider(),
+        const SizedBox(height: 8),
+        const Text('Meeting audiences',
+            style: TextStyle(color: ink, fontWeight: FontWeight.w900)),
+        const SizedBox(height: 9),
+        const _AccessLine(Icons.account_tree_outlined, 'My assignments',
+            'People within your coordination line.'),
+        const _AccessLine(Icons.location_on_outlined, 'My location',
+            'Members within your campaign area.'),
+        const _AccessLine(Icons.groups_2_outlined, 'Group',
+            'Members of a campaign group you belong to.'),
       ]),
     );
   }
 }
 
-class _RankRow extends StatelessWidget {
-  const _RankRow(this.rank, this.rule);
-  final String rank;
-  final String rule;
+class _AccessLine extends StatelessWidget {
+  const _AccessLine(this.icon, this.title, this.subtitle);
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: 9),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(rank,
-              style: const TextStyle(
-                  color: ink, fontSize: 10.5, fontWeight: FontWeight.w900)),
-          const SizedBox(height: 2),
-          Text(rule, style: const TextStyle(color: muted, fontSize: 9.5)),
+        padding: const EdgeInsets.only(bottom: 11),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(icon, color: pdpGreen, size: 19),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(title,
+                  style: const TextStyle(color: ink, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 2),
+              Text(subtitle,
+                  style: const TextStyle(color: muted, fontSize: 10.5, height: 1.35)),
+            ]),
+          ),
         ]),
       );
 }
@@ -680,162 +647,110 @@ class _MeetingList extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SectionCard(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Meeting rooms',
-              style: TextStyle(color: ink, fontSize: 18, fontWeight: FontWeight.w900)),
+          const Text('Meetings',
+              style: TextStyle(color: ink, fontSize: 17, fontWeight: FontWeight.w900)),
           const SizedBox(height: 4),
-          const Text('Scheduled and active campaign meetings visible in this prototype session.',
+          const Text('Scheduled and recent campaign meetings',
               style: TextStyle(color: muted, fontSize: 10.5)),
           const SizedBox(height: 14),
           if (meetings.isEmpty)
             const Padding(
-              padding: EdgeInsets.symmetric(vertical: 24),
-              child: Center(child: Text('No meetings scheduled.', style: TextStyle(color: muted))),
+              padding: EdgeInsets.symmetric(vertical: 28),
+              child: Center(child: Text('No meetings yet.', style: TextStyle(color: muted))),
             )
           else
-            ...meetings.map((meeting) => _MeetingCard(
-                  meeting: meeting,
-                  canControl: meeting.organizerId == actorId,
-                  onStart: () => onStart(meeting.id),
-                  onComplete: () => onComplete(meeting.id),
-                )),
+            ...meetings.map((meeting) {
+              final organizer = meeting.organizerId == actorId;
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAF8),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xFFE3E9E4)),
+                ),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Container(
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      color: _statusColor(meeting.status).withValues(alpha: .10),
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    child: Icon(Icons.video_call_rounded,
+                        color: _statusColor(meeting.status)),
+                  ),
+                  const SizedBox(width: 11),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Wrap(spacing: 7, runSpacing: 6, children: [
+                        Text(meeting.title,
+                            style: const TextStyle(
+                                color: ink, fontWeight: FontWeight.w900)),
+                        StatusPill(_statusLabel(meeting.status).toUpperCase(),
+                            color: _statusColor(meeting.status)),
+                      ]),
+                      const SizedBox(height: 5),
+                      Text(
+                        '${_formatDateTime(meeting.startsAt)} • ${meeting.durationMinutes} min • ${meeting.participantNames.length} participants',
+                        style: const TextStyle(color: muted, fontSize: 10.5),
+                      ),
+                      if (meeting.agenda.isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Text(meeting.agenda,
+                            style: const TextStyle(color: ink, fontSize: 11.5, height: 1.4)),
+                      ],
+                      const SizedBox(height: 7),
+                      Text('Called by ${meeting.organizerName}',
+                          style: const TextStyle(color: muted, fontSize: 10)),
+                    ]),
+                  ),
+                  if (organizer && meeting.status == MeetingStatus.scheduled)
+                    FilledButton.tonal(
+                      onPressed: () => onStart(meeting.id),
+                      child: const Text('Start'),
+                    )
+                  else if (organizer && meeting.status == MeetingStatus.live)
+                    FilledButton.tonal(
+                      onPressed: () => onComplete(meeting.id),
+                      child: const Text('End'),
+                    ),
+                ]),
+              );
+            }),
         ]),
       );
-}
-
-class _MeetingCard extends StatelessWidget {
-  const _MeetingCard({
-    required this.meeting,
-    required this.canControl,
-    required this.onStart,
-    required this.onComplete,
-  });
-  final CampaignMeeting meeting;
-  final bool canControl;
-  final VoidCallback onStart;
-  final VoidCallback onComplete;
-
-  @override
-  Widget build(BuildContext context) {
-    final statusColor = switch (meeting.status) {
-      MeetingStatus.live => pdpRed,
-      MeetingStatus.scheduled => const Color(0xFF0E7490),
-      MeetingStatus.completed => pdpGreen,
-      MeetingStatus.cancelled => muted,
-    };
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8FAF9),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE4EAE5)),
-      ),
-      child: LayoutBuilder(builder: (context, c) {
-        final details = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Wrap(spacing: 8, runSpacing: 6, children: [
-            Text(meeting.title,
-                style: const TextStyle(color: ink, fontSize: 13, fontWeight: FontWeight.w900)),
-            StatusPill(meeting.status.name.toUpperCase(), color: statusColor),
-            if (meeting.prototypeSeed)
-              const StatusPill('PROTOTYPE', color: Color(0xFF8A5B00)),
-          ]),
-          const SizedBox(height: 5),
-          Text(
-            '${meeting.organizerName} • ${meeting.organizerScope.label} • ${_audienceLabel(meeting.audienceMode)}',
-            style: const TextStyle(color: muted, fontSize: 9.5),
-          ),
-          if (meeting.agenda.isNotEmpty) ...[
-            const SizedBox(height: 7),
-            Text(meeting.agenda,
-                style: const TextStyle(color: ink, fontSize: 10.5, height: 1.4)),
-          ],
-          const SizedBox(height: 7),
-          Text(
-            '${_formatDateTime(meeting.startsAt)} • ${meeting.durationMinutes} min • ${meeting.participantIds.length} participants',
-            style: const TextStyle(color: muted, fontSize: 9.5, fontWeight: FontWeight.w700),
-          ),
-        ]);
-        final controls = Wrap(spacing: 8, runSpacing: 8, children: [
-          if (meeting.status == MeetingStatus.live)
-            FilledButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.call_rounded),
-              label: const Text('Join room'),
-            )
-          else
-            OutlinedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.event_available_outlined),
-              label: const Text('View'),
-            ),
-          if (canControl && meeting.status == MeetingStatus.scheduled)
-            FilledButton.icon(
-              onPressed: onStart,
-              icon: const Icon(Icons.video_call_rounded),
-              label: const Text('Start'),
-            ),
-          if (canControl && meeting.status == MeetingStatus.live)
-            OutlinedButton.icon(
-              onPressed: onComplete,
-              icon: const Icon(Icons.stop_circle_outlined),
-              label: const Text('End'),
-            ),
-        ]);
-        if (c.maxWidth < 760) {
-          return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            details,
-            const SizedBox(height: 12),
-            controls,
-          ]);
-        }
-        return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Expanded(child: details),
-          const SizedBox(width: 14),
-          controls,
-        ]);
-      }),
-    );
-  }
-}
-
-class _MeetingPolicyCard extends StatelessWidget {
-  const _MeetingPolicyCard();
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: const Color(0xFFEAF4F7),
-          borderRadius: BorderRadius.circular(17),
-          border: Border.all(color: const Color(0xFFD4E8ED)),
-        ),
-        child: const Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(Icons.shield_outlined, color: Color(0xFF0E7490)),
-          SizedBox(width: 11),
-          Expanded(
-            child: Text(
-              'Meeting access rule: normal invitations follow the organizer’s assigned geography and delegation chain. Explicit group membership may cross locations. The backend must re-check these rules server-side; Flutter filtering alone is not authorization.',
-              style: TextStyle(color: muted, fontSize: 10.5, height: 1.45),
-            ),
-          ),
-        ]),
-      );
-}
-
-String _formatDateTime(DateTime value) {
-  final local = value.toLocal();
-  final hour = local.hour == 0
-      ? 12
-      : local.hour > 12
-          ? local.hour - 12
-          : local.hour;
-  final minute = local.minute.toString().padLeft(2, '0');
-  final ampm = local.hour >= 12 ? 'PM' : 'AM';
-  return '${local.day}/${local.month}/${local.year} • $hour:$minute $ampm';
 }
 
 String _audienceLabel(MeetingAudienceMode mode) => switch (mode) {
-      MeetingAudienceMode.assignments => 'Assigned team',
-      MeetingAudienceMode.location => 'Location',
+      MeetingAudienceMode.assignments => 'My assignments',
+      MeetingAudienceMode.location => 'My location',
       MeetingAudienceMode.group => 'Group',
     };
+
+String _statusLabel(MeetingStatus status) => switch (status) {
+      MeetingStatus.scheduled => 'Scheduled',
+      MeetingStatus.live => 'Live',
+      MeetingStatus.completed => 'Completed',
+      MeetingStatus.cancelled => 'Cancelled',
+    };
+
+Color _statusColor(MeetingStatus status) => switch (status) {
+      MeetingStatus.scheduled => const Color(0xFF2563EB),
+      MeetingStatus.live => pdpRed,
+      MeetingStatus.completed => pdpGreen,
+      MeetingStatus.cancelled => muted,
+    };
+
+String _formatDateTime(DateTime value) {
+  final local = value.toLocal();
+  final hour = local.hour % 12 == 0 ? 12 : local.hour % 12;
+  final minute = local.minute.toString().padLeft(2, '0');
+  final period = local.hour >= 12 ? 'PM' : 'AM';
+  return '${_month(local.month)} ${local.day}, $hour:$minute $period';
+}
+
+String _month(int month) => const [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ][month - 1];
