@@ -13,9 +13,20 @@ void main() {
       expect(cycle.lessons, isNotEmpty);
       expect(cycle.legalAftermath, isNotEmpty);
       expect(cycle.sources, isNotEmpty);
+
+      final sourceIds = cycle.sources.map((source) => source.id).toSet();
       for (final driver in cycle.drivers) {
         expect(driver.impact, inInclusiveRange(1, 5));
         expect(driver.sourceIds, isNotEmpty);
+        expect(driver.sourceIds.every(sourceIds.contains), isTrue);
+      }
+      for (final region in cycle.regionalDynamics) {
+        expect(region.sourceIds, isNotEmpty);
+        expect(region.sourceIds.every(sourceIds.contains), isTrue);
+      }
+      for (final legal in cycle.legalAftermath) {
+        expect(legal.sourceIds, isNotEmpty);
+        expect(legal.sourceIds.every(sourceIds.contains), isTrue);
       }
     }
   });
@@ -27,11 +38,13 @@ void main() {
     expect(cycle.runnerUpVotes, 313878);
     expect(cycle.margin, 109054);
     expect(
-      cycle.drivers.any((d) => d.title == 'Civil-service and pension backlash' && d.impact == 5),
+      cycle.drivers.any((d) =>
+          d.title == 'Civil-service and pension backlash' && d.impact == 5),
       isTrue,
     );
     expect(
-      cycle.drivers.any((d) => d.title == 'PDP primary and internal-party fracture'),
+      cycle.drivers
+          .any((d) => d.title == 'PDP primary and internal-party fracture'),
       isTrue,
     );
   });
@@ -41,7 +54,8 @@ void main() {
     expect(cycle.winnerParty, 'PDP');
     expect(cycle.margin, 89318);
     expect(
-      cycle.drivers.any((d) => d.title == 'Security identity and anti-open-grazing stance'),
+      cycle.drivers.any(
+          (d) => d.title == 'Security identity and anti-open-grazing stance'),
       isTrue,
     );
     expect(
@@ -55,11 +69,13 @@ void main() {
     expect(cycle.winnerParty, 'APC');
     expect(cycle.margin, 250020);
     expect(
-      cycle.drivers.any((d) => d.title == 'Alia’s candidate-centered popularity'),
+      cycle.drivers
+          .any((d) => d.title == 'Alia’s candidate-centered popularity'),
       isTrue,
     );
     expect(
-      cycle.drivers.any((d) => d.title == 'Broad geographic APC advantage' &&
+      cycle.drivers.any((d) =>
+          d.title == 'Broad geographic APC advantage' &&
           d.evidenceType == IntelligenceEvidenceType.verifiedFact),
       isTrue,
     );
