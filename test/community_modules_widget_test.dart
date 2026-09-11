@@ -19,14 +19,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Discussion & Debate Forum'), findsOneWidget);
     expect(find.text('Start a conversation'), findsOneWidget);
-    expect(find.textContaining('Every authenticated campaign account can publish'),
-        findsOneWidget);
+    expect(find.text('Share with the campaign community'), findsOneWidget);
+    expect(find.textContaining('Prototype'), findsNothing);
 
     await tester.tap(find.text('Meeting Room'));
     await tester.pumpAndSettle();
     expect(find.text('Campaign Meeting Room'), findsOneWidget);
     expect(find.text('Call a meeting'), findsOneWidget);
-    expect(find.text('Coordination rank & delegation'), findsOneWidget);
+    expect(find.text('Your coordination level'), findsOneWidget);
     expect(find.text('State Command'), findsWidgets);
     expect(find.text('My assignments'), findsOneWidget);
     expect(find.text('My location'), findsOneWidget);
