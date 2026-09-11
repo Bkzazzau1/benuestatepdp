@@ -5,9 +5,9 @@ import 'models.dart';
 
 /// Shared in-memory records controller used by the Flutter prototype.
 ///
-/// This is deliberately shaped like a backend repository: every entity has a
-/// stable ID, geographic scope and provenance. Replacing this controller with
-/// Django/DRF repositories later should not require changing the product model.
+/// Every operational entity has a stable ID, geographic scope, provenance and
+/// audit trail. The public API intentionally resembles a backend repository so
+/// it can later be replaced by Django/DRF services without redesigning the UI.
 class CampaignRecordsController extends ChangeNotifier {
   CampaignRecordsController._({
     required List<CampaignUser> users,
@@ -88,7 +88,8 @@ class CampaignRecordsController extends ChangeNotifier {
         ownerUnit: '${lga.name} LGA Command',
         status: i % 3 == 0 ? ActivityStatus.active : ActivityStatus.planned,
         startsAt: baseTime.add(Duration(days: i % 7, hours: 2)),
-        notes: 'Prototype seeded activity. Replace with verified campaign calendar.',
+        notes:
+            'Prototype seeded activity. Replace with verified campaign calendar.',
         origin: RecordOrigin.prototypeSeed,
       ));
 
@@ -115,7 +116,8 @@ class CampaignRecordsController extends ChangeNotifier {
         reporterId: coordinatorId,
         assignedTeam: '${lga.name} Operations',
         conversationId: 'ROOM-$incidentId',
-        summary: 'Prototype seeded incident for cross-module record integration.',
+        summary:
+            'Prototype seeded incident for cross-module record integration.',
         origin: RecordOrigin.prototypeSeed,
       ));
 
@@ -141,7 +143,8 @@ class CampaignRecordsController extends ChangeNotifier {
         name: '${lga.name} Operations Vehicle 01',
         category: 'Vehicle',
         scope: scope,
-        status: i % 6 == 0 ? AssetStatus.maintenance : AssetStatus.assigned,
+        status:
+            i % 6 == 0 ? AssetStatus.maintenance : AssetStatus.assigned,
         updatedAt: baseTime.add(Duration(minutes: i * 9)),
         custodianId: coordinatorId,
         conditionNote: i % 6 == 0
@@ -153,7 +156,8 @@ class CampaignRecordsController extends ChangeNotifier {
       reports.add(FieldReport(
         id: 'RPT-${lga.id}-001',
         category: 'Operations update',
-        summary: '${lga.name} command submitted a prototype operational update.',
+        summary:
+            '${lga.name} command submitted a prototype operational update.',
         scope: scope,
         reporterId: coordinatorId,
         reportedAt: baseTime.add(Duration(hours: 1, minutes: i * 3)),
@@ -213,7 +217,9 @@ class CampaignRecordsController extends ChangeNotifier {
   final List<FieldReport> _fieldReports;
   final List<ElectionReadinessRecord> _electionReadiness;
   final List<AuditEvent> _auditEvents;
+
   int _auditSequence = 1;
+  final Map<String, int> _idSequences = <String, int>{};
 
   List<CampaignUser> get users => List.unmodifiable(_users);
   List<FieldAssignment> get assignments => List.unmodifiable(_assignments);
@@ -226,8 +232,23 @@ class CampaignRecordsController extends ChangeNotifier {
       List.unmodifiable(_electionReadiness);
   List<AuditEvent> get auditEvents => List.unmodifiable(_auditEvents);
 
+  String nextId(String prefix, {String? lgaId}) {
+    final geography = lgaId ?? 'BEN-STATE';
+    final key = '$prefix:$geography';
+    final next = (_idSequences[key] ?? 0) + 1;
+    _idSequences[key] = next;
+    return '$prefix-$geography-${next.toString().padLeft(4, '0')}';
+  }
+
   bool _matchesLga(GeographicScope scope, String? lgaId) =>
       lgaId == null || scope.lgaId == lgaId;
+
+  bool _sameScope(GeographicScope a, GeographicScope b) =>
+      a.level == b.level &&
+      a.state == b.state &&
+      a.lgaId == b.lgaId &&
+      a.wardId == b.wardId &&
+      a.pollingUnitId == b.pollingUnitId;
 
   List<CampaignUser> usersFor(String? lgaId) => _users
       .where((record) => _matchesLga(record.scope, lgaId))
@@ -257,9 +278,10 @@ class CampaignRecordsController extends ChangeNotifier {
       .where((record) => _matchesLga(record.scope, lgaId))
       .toList(growable: false);
 
-  List<ElectionReadinessRecord> readinessFor(String? lgaId) => _electionReadiness
-      .where((record) => _matchesLga(record.scope, lgaId))
-      .toList(growable: false);
+  List<ElectionReadinessRecord> readinessFor(String? lgaId) =>
+      _electionReadiness
+          .where((record) => _matchesLga(record.scope, lgaId))
+          .toList(growable: false);
 
   CampaignRecordsSummary summaryFor(String? lgaId) {
     final scopedAssignments = assignmentsFor(lgaId);
@@ -277,7 +299,8 @@ class CampaignRecordsController extends ChangeNotifier {
             record.status != TaskStatus.completed &&
             record.status != TaskStatus.cancelled)
         .length;
-    final checkedIn = scopedAssignments.where((record) => record.checkedIn).length;
+    final checkedIn =
+        scopedAssignments.where((record) => record.checkedIn).length;
     final assetsReady = scopedAssets
         .where((record) =>
             record.status == AssetStatus.available ||
@@ -324,6 +347,13 @@ class CampaignRecordsController extends ChangeNotifier {
     return null;
   }
 
+  FieldAssignment? assignmentById(String id) {
+    for (final assignment in _assignments) {
+      if (assignment.id == id) return assignment;
+    }
+    return null;
+  }
+
   void _audit({
     required String actorId,
     required String action,
@@ -343,7 +373,7 @@ class CampaignRecordsController extends ChangeNotifier {
     ));
   }
 
-  void addTask(CampaignTask task, {String actorId = 'SYSTEM'}) {
+  void addTask(CampaignTask task, {String actorId = 'UI-OPERATOR'}) {
     if (_tasks.any((item) => item.id == task.id)) {
       throw StateError('Duplicate task id: ${task.id}');
     }
@@ -353,12 +383,14 @@ class CampaignRecordsController extends ChangeNotifier {
       action: 'task_created',
       entityType: 'CampaignTask',
       entityId: task.id,
-      detail: 'Scope: ${task.scope.label}; incident: ${task.incidentId ?? 'none'}',
+      detail:
+          'Scope: ${task.scope.label}; incident: ${task.incidentId ?? 'none'}',
     );
     notifyListeners();
   }
 
-  void addIncident(CampaignIncident incident, {String actorId = 'SYSTEM'}) {
+  void addIncident(CampaignIncident incident,
+      {String actorId = 'UI-OPERATOR'}) {
     if (_incidents.any((item) => item.id == incident.id)) {
       throw StateError('Duplicate incident id: ${incident.id}');
     }
@@ -368,12 +400,14 @@ class CampaignRecordsController extends ChangeNotifier {
       action: 'incident_created',
       entityType: 'CampaignIncident',
       entityId: incident.id,
-      detail: 'Scope: ${incident.scope.label}; severity: ${incident.severity.name}',
+      detail:
+          'Scope: ${incident.scope.label}; severity: ${incident.severity.name}',
     );
     notifyListeners();
   }
 
-  void addFieldReport(FieldReport report, {String actorId = 'SYSTEM'}) {
+  void addFieldReport(FieldReport report,
+      {String actorId = 'UI-OPERATOR'}) {
     if (_fieldReports.any((item) => item.id == report.id)) {
       throw StateError('Duplicate field-report id: ${report.id}');
     }
@@ -383,12 +417,14 @@ class CampaignRecordsController extends ChangeNotifier {
       action: 'field_report_created',
       entityType: 'FieldReport',
       entityId: report.id,
-      detail: 'Scope: ${report.scope.label}; incident: ${report.incidentId ?? 'none'}',
+      detail:
+          'Scope: ${report.scope.label}; incident: ${report.incidentId ?? 'none'}',
     );
     notifyListeners();
   }
 
-  void addActivity(CampaignActivity activity, {String actorId = 'SYSTEM'}) {
+  void addActivity(CampaignActivity activity,
+      {String actorId = 'UI-OPERATOR'}) {
     if (_activities.any((item) => item.id == activity.id)) {
       throw StateError('Duplicate activity id: ${activity.id}');
     }
@@ -403,7 +439,7 @@ class CampaignRecordsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addAsset(CampaignAsset asset, {String actorId = 'SYSTEM'}) {
+  void addAsset(CampaignAsset asset, {String actorId = 'UI-OPERATOR'}) {
     if (_assets.any((item) => item.id == asset.id)) {
       throw StateError('Duplicate asset id: ${asset.id}');
     }
@@ -414,6 +450,263 @@ class CampaignRecordsController extends ChangeNotifier {
       entityType: 'CampaignAsset',
       entityId: asset.id,
       detail: 'Scope: ${asset.scope.label}',
+    );
+    notifyListeners();
+  }
+
+  void addFieldPerson({
+    required CampaignUser user,
+    required FieldAssignment assignment,
+    String actorId = 'UI-OPERATOR',
+  }) {
+    if (_users.any((item) => item.id == user.id)) {
+      throw StateError('Duplicate user id: ${user.id}');
+    }
+    if (_assignments.any((item) => item.id == assignment.id)) {
+      throw StateError('Duplicate assignment id: ${assignment.id}');
+    }
+    if (assignment.userId != user.id) {
+      throw StateError('Assignment userId must match the created user.');
+    }
+    if (!_sameScope(user.scope, assignment.scope)) {
+      throw StateError('User and assignment must share the same geography.');
+    }
+    _users.add(user);
+    _assignments.add(assignment);
+    _audit(
+      actorId: actorId,
+      action: 'field_person_created',
+      entityType: 'CampaignUser',
+      entityId: user.id,
+      detail:
+          'Assignment: ${assignment.id}; role: ${user.role.name}; scope: ${user.scope.label}',
+    );
+    notifyListeners();
+  }
+
+  void setAssignmentCheckIn(
+    String assignmentId,
+    bool checkedIn, {
+    String actorId = 'UI-OPERATOR',
+  }) {
+    final index = _assignments.indexWhere((item) => item.id == assignmentId);
+    if (index < 0) throw StateError('Unknown assignment id: $assignmentId');
+    final current = _assignments[index];
+    _assignments[index] = FieldAssignment(
+      id: current.id,
+      userId: current.userId,
+      scope: current.scope,
+      role: current.role,
+      status: current.status,
+      updatedAt: DateTime.now().toUtc(),
+      trainingComplete: current.trainingComplete,
+      checkedIn: checkedIn,
+      origin: RecordOrigin.campaignEntry,
+    );
+    _audit(
+      actorId: actorId,
+      action: checkedIn ? 'assignment_checked_in' : 'assignment_checked_out',
+      entityType: 'FieldAssignment',
+      entityId: assignmentId,
+      detail: 'Scope: ${current.scope.label}',
+    );
+    notifyListeners();
+  }
+
+  void setAssignmentTraining(
+    String assignmentId,
+    bool complete, {
+    String actorId = 'UI-OPERATOR',
+  }) {
+    final index = _assignments.indexWhere((item) => item.id == assignmentId);
+    if (index < 0) throw StateError('Unknown assignment id: $assignmentId');
+    final current = _assignments[index];
+    _assignments[index] = FieldAssignment(
+      id: current.id,
+      userId: current.userId,
+      scope: current.scope,
+      role: current.role,
+      status: complete ? AssignmentStatus.ready : AssignmentStatus.training,
+      updatedAt: DateTime.now().toUtc(),
+      trainingComplete: complete,
+      checkedIn: current.checkedIn,
+      origin: RecordOrigin.campaignEntry,
+    );
+    _audit(
+      actorId: actorId,
+      action: 'assignment_training_updated',
+      entityType: 'FieldAssignment',
+      entityId: assignmentId,
+      detail: 'trainingComplete=$complete',
+    );
+    notifyListeners();
+  }
+
+  void setReadiness({
+    required GeographicScope scope,
+    required double agentCoveragePercent,
+    required bool communicationReady,
+    required bool logisticsReady,
+    String? note,
+    String actorId = 'UI-OPERATOR',
+  }) {
+    final safeCoverage = agentCoveragePercent.clamp(0, 100).toDouble();
+    final status = safeCoverage >= 75 && communicationReady && logisticsReady
+        ? ElectionReadinessStatus.ready
+        : safeCoverage < 40
+            ? ElectionReadinessStatus.attentionRequired
+            : ElectionReadinessStatus.incomplete;
+    final index = _electionReadiness.indexWhere(
+      (item) => _sameScope(item.scope, scope),
+    );
+    final record = ElectionReadinessRecord(
+      id: index >= 0
+          ? _electionReadiness[index].id
+          : nextId('READY', lgaId: scope.lgaId),
+      scope: scope,
+      status: status,
+      agentCoveragePercent: safeCoverage,
+      communicationReady: communicationReady,
+      logisticsReady: logisticsReady,
+      updatedAt: DateTime.now().toUtc(),
+      note: note,
+      origin: RecordOrigin.campaignEntry,
+    );
+    if (index >= 0) {
+      _electionReadiness[index] = record;
+    } else {
+      _electionReadiness.add(record);
+    }
+    _audit(
+      actorId: actorId,
+      action: 'readiness_updated',
+      entityType: 'ElectionReadinessRecord',
+      entityId: record.id,
+      detail:
+          'coverage=${safeCoverage.toStringAsFixed(0)}; communications=$communicationReady; logistics=$logisticsReady',
+    );
+    notifyListeners();
+  }
+
+  void updateIncidentStatus(
+    String incidentId,
+    IncidentStatus status, {
+    String actorId = 'UI-OPERATOR',
+  }) {
+    final index = _incidents.indexWhere((item) => item.id == incidentId);
+    if (index < 0) throw StateError('Unknown incident id: $incidentId');
+    final current = _incidents[index];
+    _incidents[index] = CampaignIncident(
+      id: current.id,
+      title: current.title,
+      category: current.category,
+      severity: current.severity,
+      status: status,
+      scope: current.scope,
+      reportedAt: current.reportedAt,
+      reporterId: current.reporterId,
+      assignedTeam: current.assignedTeam,
+      conversationId: current.conversationId,
+      summary: current.summary,
+      origin: RecordOrigin.campaignEntry,
+    );
+    _audit(
+      actorId: actorId,
+      action: 'incident_status_updated',
+      entityType: 'CampaignIncident',
+      entityId: incidentId,
+      detail: 'status=${status.name}',
+    );
+    notifyListeners();
+  }
+
+  void updateTaskStatus(
+    String taskId,
+    TaskStatus status, {
+    String actorId = 'UI-OPERATOR',
+  }) {
+    final index = _tasks.indexWhere((item) => item.id == taskId);
+    if (index < 0) throw StateError('Unknown task id: $taskId');
+    final current = _tasks[index];
+    _tasks[index] = CampaignTask(
+      id: current.id,
+      title: current.title,
+      ownerId: current.ownerId,
+      scope: current.scope,
+      status: status,
+      priority: current.priority,
+      createdAt: current.createdAt,
+      dueAt: current.dueAt,
+      sourceConversationId: current.sourceConversationId,
+      sourceMessageId: current.sourceMessageId,
+      incidentId: current.incidentId,
+      origin: RecordOrigin.campaignEntry,
+    );
+    _audit(
+      actorId: actorId,
+      action: 'task_status_updated',
+      entityType: 'CampaignTask',
+      entityId: taskId,
+      detail: 'status=${status.name}',
+    );
+    notifyListeners();
+  }
+
+  void updateActivityStatus(
+    String activityId,
+    ActivityStatus status, {
+    String actorId = 'UI-OPERATOR',
+  }) {
+    final index = _activities.indexWhere((item) => item.id == activityId);
+    if (index < 0) throw StateError('Unknown activity id: $activityId');
+    final current = _activities[index];
+    _activities[index] = CampaignActivity(
+      id: current.id,
+      title: current.title,
+      category: current.category,
+      scope: current.scope,
+      ownerUnit: current.ownerUnit,
+      status: status,
+      startsAt: current.startsAt,
+      endsAt: current.endsAt,
+      notes: current.notes,
+      origin: RecordOrigin.campaignEntry,
+    );
+    _audit(
+      actorId: actorId,
+      action: 'activity_status_updated',
+      entityType: 'CampaignActivity',
+      entityId: activityId,
+      detail: 'status=${status.name}',
+    );
+    notifyListeners();
+  }
+
+  void updateAssetStatus(
+    String assetId,
+    AssetStatus status, {
+    String actorId = 'UI-OPERATOR',
+  }) {
+    final index = _assets.indexWhere((item) => item.id == assetId);
+    if (index < 0) throw StateError('Unknown asset id: $assetId');
+    final current = _assets[index];
+    _assets[index] = CampaignAsset(
+      id: current.id,
+      name: current.name,
+      category: current.category,
+      scope: current.scope,
+      status: status,
+      updatedAt: DateTime.now().toUtc(),
+      custodianId: current.custodianId,
+      conditionNote: current.conditionNote,
+      origin: RecordOrigin.campaignEntry,
+    );
+    _audit(
+      actorId: actorId,
+      action: 'asset_status_updated',
+      entityType: 'CampaignAsset',
+      entityId: assetId,
+      detail: 'status=${status.name}',
     );
     notifyListeners();
   }
