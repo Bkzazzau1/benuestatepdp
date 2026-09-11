@@ -33,6 +33,7 @@ class CandidatePortrait extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final corner = radius ?? size * .24;
+    final innerCorner = (corner - borderWidth).clamp(4.0, corner).toDouble();
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -56,7 +57,7 @@ class CandidatePortrait extends StatelessWidget {
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular((corner - borderWidth).clamp(4, corner)),
+            borderRadius: BorderRadius.circular(innerCorner),
             child: Container(
               color: const Color(0xFF343230),
               alignment: Alignment.center,
