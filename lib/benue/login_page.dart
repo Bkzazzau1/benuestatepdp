@@ -115,23 +115,7 @@ class _CampaignLoginPageState extends State<CampaignLoginPage> {
                 children: [
                   Row(
                     children: [
-                      Container(
-                        width: 46,
-                        height: 46,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Image.asset(
-                            'assets/images/pdp.jpg',
-                            fit: BoxFit.contain,
-                            semanticLabel: 'PDP logo',
-                          ),
-                        ),
-                      ),
+                      const PdpLogo(),
                       const SizedBox(width: 12),
                       const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

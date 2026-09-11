@@ -766,9 +766,7 @@ class _CrossElectionIntelligence extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final e2015 = benueHistoricalElectionsOfficial[0];
     final e2019 = benueHistoricalElectionsOfficial[1];
-    final e2023 = benueHistoricalElectionsOfficial[2];
 
     return _Panel(
       title: 'What changed across the three cycles?',

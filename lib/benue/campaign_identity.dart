@@ -10,6 +10,29 @@ class CampaignIdentity {
   static const candidateName = 'Michael Kaase Aondoakaa';
   static const candidateTitle = 'PDP Governorship Candidate';
   static const portraitAsset = 'assets/images/michael-kaase-aondoakaa.jpg';
+  static const partyLogoAsset = 'assets/images/pdp.jpg';
+}
+
+class PdpLogo extends StatelessWidget {
+  const PdpLogo({super.key, this.size = 46});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: size,
+        height: size,
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(size * .3),
+        ),
+        child: Image.asset(
+          CampaignIdentity.partyLogoAsset,
+          fit: BoxFit.contain,
+          semanticLabel: 'PDP logo',
+        ),
+      );
 }
 
 /// Formal campaign portrait treatment.
