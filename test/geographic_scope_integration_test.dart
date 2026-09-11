@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:polisphere/benue/benue_app.dart';
+
+import 'ui_test_helpers.dart';
 
 void main() {
   testWidgets('Makurdi selection resolves the same shared records across modules',
@@ -10,8 +11,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const BenueCampaignApp());
-    await tester.pumpAndSettle();
+    await pumpLoggedInAsDirectorGeneral(tester);
 
     await tester.tap(find.text('Benue Map').first);
     await tester.pumpAndSettle();
