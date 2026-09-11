@@ -18,9 +18,14 @@ void main() {
     expect(find.text('Field assignments'), findsWidgets);
     expect(find.text('Priority alerts'), findsWidgets);
     expect(find.text('Operational tasks'), findsOneWidget);
-    expect(find.text('Campaign momentum'), findsOneWidget);
-    expect(find.text('AI Command Brief'), findsOneWidget);
-    expect(find.text('Quick actions'), findsOneWidget);
+    for (final heading in ['Campaign momentum', 'AI Command Brief', 'Quick actions']) {
+      await tester.scrollUntilVisible(
+        find.text(heading),
+        350,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(find.text(heading), findsOneWidget);
+    }
     expect(find.textContaining('Zaria'), findsNothing);
   });
 
@@ -37,9 +42,15 @@ void main() {
     expect(find.text('Historical Elections'), findsWidgets);
     expect(find.text('+120,595'), findsOneWidget);
     expect(find.text('−210,560'), findsOneWidget);
-    expect(find.text('What the history shows'), findsOneWidget);
-    expect(find.text('Data still required'), findsOneWidget);
     expect(find.textContaining('APC + PDP only'), findsWidgets);
+    for (final heading in ['What the history shows', 'Data still required']) {
+      await tester.scrollUntilVisible(
+        find.text(heading),
+        350,
+        scrollable: find.byType(Scrollable).last,
+      );
+      expect(find.text(heading), findsOneWidget);
+    }
   });
 
   testWidgets('opens historical election intelligence and forecast scenarios',

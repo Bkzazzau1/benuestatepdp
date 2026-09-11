@@ -169,7 +169,7 @@ class _ExecutiveHero extends StatelessWidget {
             );
           }
           return Container(
-            height: 326,
+            height: 350,
             decoration: _heroDecoration(),
             clipBehavior: Clip.antiAlias,
             child: Row(

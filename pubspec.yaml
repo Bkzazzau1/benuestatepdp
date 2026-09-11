@@ -18,4 +18,4 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/candidate.jpg
+    - assets/images/michael-kaase-aondoakaa.jpg

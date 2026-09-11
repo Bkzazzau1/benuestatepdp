@@ -159,7 +159,7 @@ class CommandActionsBar extends StatelessWidget {
     final summary = TextEditingController();
     var severity = IncidentSeverity.medium;
 
-    final save = await showDialog<bool>(
+    final save = await _showCommandDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setLocal) => AlertDialog(
@@ -266,7 +266,7 @@ class CommandActionsBar extends StatelessWidget {
     var priority = IncidentSeverity.medium;
     String? incidentId;
 
-    final save = await showDialog<bool>(
+    final save = await _showCommandDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setLocal) => AlertDialog(
@@ -376,7 +376,7 @@ class CommandActionsBar extends StatelessWidget {
     final summary = TextEditingController();
     String? incidentId;
 
-    final save = await showDialog<bool>(
+    final save = await _showCommandDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setLocal) => AlertDialog(
@@ -458,7 +458,7 @@ class CommandActionsBar extends StatelessWidget {
     final category = TextEditingController(text: 'Campaign engagement');
     final note = TextEditingController();
 
-    final save = await showDialog<bool>(
+    final save = await _showCommandDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Schedule campaign activity'),
@@ -537,7 +537,7 @@ class CommandActionsBar extends StatelessWidget {
     final note = TextEditingController();
     String? custodianId = users.isEmpty ? null : users.first.id;
 
-    final save = await showDialog<bool>(
+    final save = await _showCommandDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setLocal) => AlertDialog(
@@ -631,7 +631,7 @@ class CommandActionsBar extends StatelessWidget {
       if (active.pollingUnitId != null) CampaignRole.pollingUnitAgent,
     ];
 
-    final save = await showDialog<bool>(
+    final save = await _showCommandDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setLocal) => AlertDialog(
@@ -720,7 +720,7 @@ class CommandActionsBar extends StatelessWidget {
     final records = _records(context);
     final assignments = records.assignmentsFor(active.lgaId);
 
-    await showDialog<void>(
+    await _showCommandDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text('${active.lgaName} field check-in'),
@@ -780,7 +780,7 @@ class CommandActionsBar extends StatelessWidget {
     var logistics = current.isNotEmpty && current.first.logisticsReady;
     final note = TextEditingController(text: current.isEmpty ? '' : current.first.note ?? '');
 
-    final save = await showDialog<bool>(
+    final save = await _showCommandDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setLocal) => AlertDialog(
@@ -896,7 +896,7 @@ class CommandActionsBar extends StatelessWidget {
       }
     }
 
-    final save = await showDialog<bool>(
+    final save = await _showCommandDialog<bool>(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
         builder: (context, setLocal) {
@@ -1025,6 +1025,23 @@ class CommandActionsBar extends StatelessWidget {
       ),
     );
   }
+}
+
+// Keep form controllers alive until the dialog's closing transition finishes.
+Future<T?> _showCommandDialog<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+}) async {
+  ModalRoute<dynamic>? dialogRoute;
+  final result = await showDialog<T>(
+    context: context,
+    builder: (dialogContext) {
+      dialogRoute = ModalRoute.of(dialogContext);
+      return builder(dialogContext);
+    },
+  );
+  await dialogRoute?.completed;
+  return result;
 }
 
 class _ActionButton extends StatelessWidget {

@@ -9,7 +9,7 @@ class CampaignIdentity {
   static const campaignName = 'Benue State PDP Governorship Campaign';
   static const candidateName = 'Michael Kaase Aondoakaa';
   static const candidateTitle = 'PDP Governorship Candidate';
-  static const portraitAsset = 'assets/images/candidate.jpg';
+  static const portraitAsset = 'assets/images/michael-kaase-aondoakaa.jpg';
 }
 
 /// Formal campaign portrait treatment.
