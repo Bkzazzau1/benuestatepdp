@@ -153,31 +153,13 @@ class PageHeading extends StatelessWidget {
       );
 }
 
+/// Retained for compatibility with existing pages. Developer/status banners are
+/// intentionally hidden from the campaign-facing interface.
 class PrototypeBanner extends StatelessWidget {
   const PrototypeBanner({super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFF5D9),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFFFE19B)),
-        ),
-        child: const Row(
-          children: [
-            Icon(Icons.science_outlined, size: 18, color: Color(0xFF8A5B00)),
-            SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Prototype mode: historical totals are sourced; live campaign metrics are demonstration values until connected to verified field and polling data.',
-                style: TextStyle(
-                    color: Color(0xFF6D4A00), fontWeight: FontWeight.w600),
-              ),
-            ),
-          ],
-        ),
-      );
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 class ElectionBars extends StatelessWidget {
@@ -200,7 +182,7 @@ class ElectionBars extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(99),
                   child: LinearProgressIndicator(
-                    value: value / maxValue,
+                    value: maxValue == 0 ? 0 : value / maxValue,
                     minHeight: 12,
                     backgroundColor: const Color(0xFFE9EFEA),
                     valueColor: AlwaysStoppedAnimation<Color>(color),
