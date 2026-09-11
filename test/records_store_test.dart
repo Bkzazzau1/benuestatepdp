@@ -45,6 +45,7 @@ void main() {
 
     expect(makurdiIncidents.single.origin, RecordOrigin.prototypeSeed);
     expect(makurdiTasks.single.origin, RecordOrigin.prototypeSeed);
+    expect(records.auditEvents.single.action, 'prototype_seed_loaded');
 
     records.dispose();
   });
@@ -57,6 +58,34 @@ void main() {
       () => records.addTask(existing),
       throwsStateError,
     );
+
+    records.dispose();
+  });
+
+  test('new operational records append an attributable audit event', () {
+    final records = CampaignRecordsController.prototypeSeed();
+    final before = records.auditEvents.length;
+    final owner = records.userById('USR-BEN-LGA-13-COORD')!;
+
+    records.addTask(
+      CampaignTask(
+        id: 'TSK-BEN-LGA-13-002',
+        title: 'Verify new field requirement',
+        ownerId: owner.id,
+        scope: owner.scope,
+        status: TaskStatus.open,
+        priority: IncidentSeverity.high,
+        createdAt: DateTime.utc(2026, 9, 11, 15),
+        origin: RecordOrigin.campaignEntry,
+      ),
+      actorId: 'USR-STATE-OPS-001',
+    );
+
+    expect(records.tasksFor('BEN-LGA-13').length, 2);
+    expect(records.auditEvents.length, before + 1);
+    expect(records.auditEvents.last.actorId, 'USR-STATE-OPS-001');
+    expect(records.auditEvents.last.action, 'task_created');
+    expect(records.auditEvents.last.entityId, 'TSK-BEN-LGA-13-002');
 
     records.dispose();
   });
