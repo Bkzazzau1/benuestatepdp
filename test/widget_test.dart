@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'ui_test_helpers.dart';
 
 void main() {
-  testWidgets('loads the Benue statewide record-driven command dashboard',
+  testWidgets('loads the Benue statewide executive command dashboard',
       (tester) async {
     tester.view.physicalSize = const Size(1440, 1000);
     tester.view.devicePixelRatio = 1;
@@ -14,11 +14,13 @@ void main() {
     await pumpLoggedInAsDirectorGeneral(tester);
 
     expect(find.text('POLISPHERE BENUE'), findsOneWidget);
-    expect(find.textContaining('Benue State PDP Governorship Campaign'),
-        findsOneWidget);
-    expect(find.text('Field assignments'), findsOneWidget);
-    expect(find.text('Priority incidents'), findsOneWidget);
+    expect(find.textContaining('Benue Governorship Campaign'), findsWidgets);
+    expect(find.text('Field assignments'), findsWidgets);
+    expect(find.text('Priority alerts'), findsWidgets);
     expect(find.text('Operational tasks'), findsOneWidget);
+    expect(find.text('Campaign momentum'), findsOneWidget);
+    expect(find.text('AI Command Brief'), findsOneWidget);
+    expect(find.text('Quick actions'), findsOneWidget);
     expect(find.textContaining('Zaria'), findsNothing);
   });
 
